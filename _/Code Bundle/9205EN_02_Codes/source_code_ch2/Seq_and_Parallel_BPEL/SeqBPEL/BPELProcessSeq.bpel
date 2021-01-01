@@ -1,0 +1,118 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Feb 24 16:51:06 CET 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="BPELProcessSeq"
+               targetNamespace="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://www.packt.org/book/hotel"
+         xmlns:ns2="http://axis.ws.packt.org"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns3="http://axis.ws.packt.org/xsd">
+
+    <import namespace="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq" location="BPELProcessSeq.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelprocessseq_client" partnerLinkType="client:BPELProcessSeq" myRole="BPELProcessSeqProvider"/>
+    <partnerLink name="RoomPriceSvc" partnerLinkType="ns2:RoomPriceSvc"
+                 partnerRole="RoomPriceServicePortType"/>
+    <partnerLink name="BookHotelSvc" partnerLinkType="ns1:BookHotelSvc"
+                 partnerRole="HotelBooking"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:BPELProcessSeqRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:BPELProcessSeqResponseMessage"/>
+    <variable name="AvailableHotels_availableHotels_InputVariable"
+              messageType="ns1:availableHotels"/>
+    <variable name="AvailableHotels_availableHotels_OutputVariable"
+              messageType="ns1:availableHotelsResponse"/>
+    <variable name="GetRoomPrice_getPrice_InputVariable"
+              messageType="ns2:getPriceRequest"/>
+    <variable name="GetRoomPrice_getPrice_OutputVariable"
+              messageType="ns2:getPriceResponse"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in BPELProcessSeq.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelprocessseq_client" portType="client:BPELProcessSeq" operation="process" variable="inputVariable" createInstance="yes"/>
+    <sequence name="Sequence1">
+      <assign name="AssignAvailHotels">
+        <copy>
+          <from>xp20:current-dateTime()</from>
+          <to>$AvailableHotels_availableHotels_InputVariable.parameters/ns1:from</to>
+        </copy>
+        <copy>
+          <from>xp20:current-dateTime()</from>
+          <to>$AvailableHotels_availableHotels_InputVariable.parameters/ns1:to</to>
+        </copy>
+      </assign>
+      <invoke name="AvailableHotels" bpelx:invokeAsDetail="no"
+              partnerLink="BookHotelSvc" portType="ns1:HotelBooking"
+              operation="availableHotels"
+              inputVariable="AvailableHotels_availableHotels_InputVariable"
+              outputVariable="AvailableHotels_availableHotels_OutputVariable"/>
+      <assign name="AssignRoomPrice">
+        <copy>
+          <from>$inputVariable.payload/client:input</from>
+          <to>$GetRoomPrice_getPrice_InputVariable.parameters</to>
+        </copy>
+      </assign>
+      <invoke name="GetRoomPrice" bpelx:invokeAsDetail="no"
+              partnerLink="RoomPriceSvc"
+              portType="ns2:RoomPriceServicePortType" operation="getPrice"
+              inputVariable="GetRoomPrice_getPrice_InputVariable"
+              outputVariable="GetRoomPrice_getPrice_OutputVariable"/>
+    </sequence>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelprocessseq_client" portType="client:BPELProcessSeq" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

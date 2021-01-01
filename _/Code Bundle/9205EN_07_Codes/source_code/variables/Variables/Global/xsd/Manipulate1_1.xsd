@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/Variables/Global/Manipulate1_1"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="process">
+		<complexType>
+			<sequence>
+				<element name="input" type="string"/>
+                                <element name="item" type="string"/>
+                                <element name="priceVAT" type="decimal"/>
+                                <element name="child_no" type="integer"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="processResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+                                <element name="priceNet" type="decimal"/>
+                                <element name="vat" type="decimal"/>
+                                <element name="child_selection" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="ChildrenElementType">
+		<complexType>
+			<sequence>
+                            <element name="child" type="string" minOccurs="1" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>                
+</schema>

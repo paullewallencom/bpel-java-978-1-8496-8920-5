@@ -1,0 +1,39 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="XML_Mapping"
+     targetNamespace="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping"
+     xmlns:ns1="http://org.packt.temp"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="XML_Mapping">
+        <plnk:role name="XML_MappingProvider" portType="client:XML_Mapping"/>
+        <plnk:role name="XML_MappingRequester" portType="client:XML_MappingCallback"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping"
+                 schemaLocation="xsd/XML_Mapping.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://org.packt.temp" schemaLocation="xsd/TempSchema.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="XML_MappingRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="XML_MappingResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="XML_Mapping">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:XML_MappingRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="XML_MappingCallback">
+        <wsdl:operation name="processResponse">
+            <wsdl:input message="client:XML_MappingResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

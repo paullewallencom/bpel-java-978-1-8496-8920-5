@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="DynamicBPEL" targetNamespace="http://xmlns.oracle.com/DynamicBPEL/DynamicBPEL/DynamicBPEL" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/DynamicBPEL/DynamicBPEL/DynamicBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://www.packt.org/book/hotel" xmlns:ns2="http://schemas.xmlsoap.org/ws/2003/03/addressing" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="dynamicbpel_client" partnerLinkType="client:DynamicBPEL" myRole="DynamicBPELProvider"/>
+    <partnerLink name="BookHotelSvc" partnerLinkType="ns1:BookHotelService" partnerRole="HotelBooking"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:DynamicBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:DynamicBPELResponseMessage"/>
+    <variable name="EndpointReference" element="ns2:EndpointReference"/>
+    <variable name="InvokeDynamic_availableHotels_InputVariable" messageType="ns1:availableHotels"/>
+    <variable name="InvokeDynamic_availableHotels_OutputVariable" messageType="ns1:availableHotelsResponse"/>
+    <variable name="address" type="xsd:string"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in DynamicBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="dynamicbpel_client" portType="client:DynamicBPEL" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <switch name="Switch1" id="BpSwt0">
+      <case condition="xp20:year-from-dateTime(string(bpws:getVariableData('inputVariable','payload','/client:process/client:from'))) = 2011">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">8888</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <assign name="AssignSvc2" id="BpAss0">
+          <copy>
+            <from expression="string(&quot;http://localhost:8888/axis2/services/BookHotelService&quot;)"/>
+            <to variable="address"/>
+          </copy>
+        </assign>
+      </case>
+      <case condition="xp20:year-from-dateTime(string(bpws:getVariableData('inputVariable','payload','/client:process/client:from')))  = 2010">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">7777</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <assign name="AssignSvc1" id="BpAss1">
+          <copy>
+            <from expression="string(&quot;http://localhost:7777/axis2/services/BookHotelService&quot;)"/>
+            <to variable="address"/>
+          </copy>
+        </assign>
+      </case>
+      <otherwise>
+        <assign name="AssignSvc3" id="BpAss2">
+          <copy>
+            <from expression="string(&quot;http://localhost:9999/axis2/services/BookHotelService&quot;)"/>
+            <to variable="address"/>
+          </copy>
+        </assign>
+      </otherwise>
+    </switch>
+    <assign name="Assign1" id="BpAss3">
+      <copy>
+        <from><EndpointReference xmlns="http://schemas.xmlsoap.org/ws/2003/03/addressing">
+  <Address/>
+</EndpointReference></from>
+        <to variable="EndpointReference"/>
+      </copy>
+      <bpelx:append>
+        <bpelx:from variable="address"/>
+        <bpelx:to variable="EndpointReference" query="/ns2:EndpointReference/ns2:Address"/>
+      </bpelx:append>
+      <copy>
+        <from variable="EndpointReference"/>
+        <to partnerLink="BookHotelSvc"/>
+      </copy>
+    </assign>
+    <assign name="Assign2" id="BpAss4">
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:from"/>
+        <to variable="InvokeDynamic_availableHotels_InputVariable" part="inMsg" query="/ns1:availableHotels/ns1:from"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:to"/>
+        <to variable="InvokeDynamic_availableHotels_InputVariable" part="inMsg" query="/ns1:availableHotels/ns1:to"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeDynamic" bpelx:invokeAsDetail="no" inputVariable="InvokeDynamic_availableHotels_InputVariable" outputVariable="InvokeDynamic_availableHotels_OutputVariable" partnerLink="BookHotelSvc" portType="ns1:HotelBooking" operation="availableHotels" id="BpInv0"/>
+    <assign name="Results" id="BpAss5">
+      <copy>
+        <from expression="string(bpws:getVariableData('InvokeDynamic_availableHotels_OutputVariable','outMsg','/ns1:availableHotelsResponse'))"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:result"/>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="dynamicbpel_client" portType="client:DynamicBPEL" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Feb 24 00:19:57 CET 2013
+  Author:  jurij
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

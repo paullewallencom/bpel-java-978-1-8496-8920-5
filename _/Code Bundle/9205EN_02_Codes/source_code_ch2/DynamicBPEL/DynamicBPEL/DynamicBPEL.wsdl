@@ -1,0 +1,35 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="DynamicBPEL"
+     targetNamespace="http://xmlns.oracle.com/DynamicBPEL/DynamicBPEL/DynamicBPEL"
+     xmlns:ns1="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/DynamicBPEL/DynamicBPEL/DynamicBPEL"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="DynamicBPEL">
+        <plnk:role name="DynamicBPELProvider">
+            <plnk:portType name="client:DynamicBPEL"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/DynamicBPEL/DynamicBPEL/DynamicBPEL" schemaLocation="xsd/DynamicBPEL.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" schemaLocation="xsd/addressing.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="DynamicBPELRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="DynamicBPELResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="DynamicBPEL">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:DynamicBPELRequestMessage"/>
+            <wsdl:output message="client:DynamicBPELResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

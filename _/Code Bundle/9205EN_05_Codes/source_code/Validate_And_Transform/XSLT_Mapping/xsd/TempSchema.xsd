@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="windows-1250" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://org.packt.temp"
+            targetNamespace="http://org.packt.temp"
+            elementFormDefault="qualified">
+  <xsd:element name="TempElement">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="pieces" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

@@ -1,0 +1,73 @@
+22.4.2013 23:12:16 oracle.mds
+NOTIFICATION: PManager instance is created without multitenancy support as JVM flag "oracle.multitenant.enabled" is not set to enable multitenancy support.
+22.4.2013 23:12:16 oracle.fabric.common.wsdl.SchemaManager isIncrementalBuildSupported
+INFO: XMLSchema incremental build enabled.
+22.4.2013 23:12:16 com.collaxa.cube.CubeLogger info
+INFO: validating "VarCopy_1_1.bpel" ...
+22.4.2013 23:12:17 oracle.integration.platform.blocks.FabricConfigManager <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+22.4.2013 23:12:17 oracle.integration.platform.blocks.WLSPlatformConfigurationProvider <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELSequenceBlock
+22.4.2013 23:12:17 com.collaxa.cube.CubeLogger info
+INFO: Composed "VarCopy_1_1" in 43,2 milliseconds [nodes 10=0+10, 231,3 nodes/sec]
+22.4.2013 23:12:18 com.collaxa.cube.CubeLogger info
+INFO: Compiled "VarCopy_1_1" in 1,561 seconds
+22.4.2013 23:12:18 com.collaxa.cube.CubeLogger info
+INFO: Gathered 3 files in 0,7 milliseconds
+
+22.4.2013 23:12:18 com.collaxa.cube.CubeLogger info
+INFO: Packaged "VarCopy_1_1" in 20,9 milliseconds
+
+22.4.2013 23:12:18 com.collaxa.cube.CubeLogger info
+INFO: validating "VarInit.bpel" ...
+22.4.2013 23:12:18 com.collaxa.cube.CubeLogger info
+INFO: Composed "VarInit" in 9,8 milliseconds [nodes 7=0+7, 712,2 nodes/sec]
+22.4.2013 23:12:20 com.collaxa.cube.CubeLogger info
+INFO: Compiled "VarInit" in 1,059 seconds
+22.4.2013 23:12:20 com.collaxa.cube.CubeLogger info
+INFO: Gathered 3 files in 0,7 milliseconds
+
+22.4.2013 23:12:20 com.collaxa.cube.CubeLogger info
+INFO: Packaged "VarInit" in 22,9 milliseconds
+
+22.4.2013 23:12:20 com.collaxa.cube.CubeLogger info
+INFO: validating "DateTime.bpel" ...
+22.4.2013 23:12:20 com.collaxa.cube.CubeLogger info
+INFO: Composed "DateTime" in 8,9 milliseconds [nodes 6=0+6, 670,8 nodes/sec]
+22.4.2013 23:12:21 com.collaxa.cube.CubeLogger info
+INFO: Compiled "DateTime" in 1,052 seconds
+22.4.2013 23:12:21 com.collaxa.cube.CubeLogger info
+INFO: Gathered 3 files in 0,6 milliseconds
+
+22.4.2013 23:12:21 com.collaxa.cube.CubeLogger info
+INFO: Packaged "DateTime" in 26,9 milliseconds
+
+22.4.2013 23:12:21 com.collaxa.cube.CubeLogger info
+INFO: validating "Manipulate1_1.bpel" ...
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELScopeBlock
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELSwitchBlock
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELCompensationHandlerBlock
+22.4.2013 23:12:21 com.collaxa.cube.CubeLogger info
+INFO: Composed "Manipulate1_1" in 17,8 milliseconds [nodes 20=1+19, 1.124,1 nodes/sec]
+22.4.2013 23:12:22 com.collaxa.cube.CubeLogger info
+INFO: Compiled "Manipulate1_1" in 1,130 seconds
+22.4.2013 23:12:22 com.collaxa.cube.CubeLogger info
+INFO: Gathered 5 files in 0,7 milliseconds
+
+22.4.2013 23:12:22 com.collaxa.cube.CubeLogger info
+INFO: Packaged "Manipulate1_1" in 54,6 milliseconds
+
+22.4.2013 23:12:22 com.collaxa.cube.CubeLogger info
+INFO: validating "VarDefinition.bpel" ...
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELCatchFaultBlock
+22.4.2013 23:12:22 com.collaxa.cube.CubeLogger info
+INFO: Composed "VarDefinition" in 12,4 milliseconds [nodes 15=1+14, 1.209,4 nodes/sec]
+22.4.2013 23:12:24 com.collaxa.cube.CubeLogger info
+INFO: Compiled "VarDefinition" in 1,070 seconds
+22.4.2013 23:12:24 com.collaxa.cube.CubeLogger info
+INFO: Gathered 5 files in 0,7 milliseconds
+
+22.4.2013 23:12:24 com.collaxa.cube.CubeLogger info
+INFO: Packaged "VarDefinition" in 73,2 milliseconds
+

@@ -1,0 +1,12 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<actions targetNamespace="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq" xmlns="http://xmlns.oracle.com/bpel/sensor" xmlns:tns="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq" xmlns:pc="http://xmlns.oracle.com/bpel/sensor">
+   <action name="DBAction" publishName="" publishType="BpelReportsSchema" enabled="true">
+      <sensorName>RoomPriceSensor</sensorName>
+      <sensorName>RoomPriceSensorActivity</sensorName>
+      <sensorName>CarFaultSensor</sensorName>
+   </action>
+   <action name="JMSAction" publishName="" publishType="JMSQueue" enabled="true" filter="" publishTarget="jms/sensorin">
+      <property name="JMSConnectionFactory">jms/sensfact</property>
+      <sensorName>HotelSensor</sensorName>
+   </action>
+</actions>

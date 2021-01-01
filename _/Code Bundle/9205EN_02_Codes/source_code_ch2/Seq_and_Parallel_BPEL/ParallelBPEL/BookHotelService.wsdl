@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+     name="BookHotelService"
+     targetNamespace="http://www.packt.org/book/hotel"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://www.packt.org/book/hotel"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <types>
+        <xsd:schema>
+            <xsd:import namespace="http://www.packt.org/book/hotel" schemaLocation="xsd/BookHotelService_xsd_BookHotelService_schema1.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="availableHotels">
+        <part name="parameters" element="tns:availableHotels"/>
+    </message>
+    <message name="availableHotelsResponse">
+        <part name="parameters" element="tns:availableHotelsResponse"/>
+    </message>
+    <portType name="HotelBooking">
+        <operation name="availableHotels">
+            <input message="tns:availableHotels"/>
+            <output message="tns:availableHotelsResponse"/>
+        </operation>
+    </portType>
+    <binding name="HotelBookingPortBinding" type="tns:HotelBooking">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="availableHotels">
+            <soap:operation soapAction="urn:availableHotels"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="BookHotelService">
+        <port name="HotelBookingPort" binding="tns:HotelBookingPortBinding">
+            <soap:address location="http://localhost:9999/axis2/services/BookHotelService/"/>
+        </port>
+    </service>
+</definitions>

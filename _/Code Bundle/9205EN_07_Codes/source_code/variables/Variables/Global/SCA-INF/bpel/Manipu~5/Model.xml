@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="Manipulate1_1" targetNamespace="http://xmlns.oracle.com/Variables/Global/Manipulate1_1" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/Variables/Global/Manipulate1_1" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="manipulate1_1_client" partnerLinkType="client:Manipulate1_1" myRole="Manipulate1_1Provider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:Manipulate1_1RequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:Manipulate1_1ResponseMessage"/>
+    <variable name="MyName" type="xsd:string"/>
+    <variable name="ResponseElement" element="client:process"/>
+    <variable name="Var_int" type="xsd:int"/>
+    <variable name="Var_long" type="xsd:long"/>
+    <variable name="Var_short" type="xsd:short"/>
+    <variable name="Var_decimal" type="xsd:decimal"/>
+    <variable name="Var_float" type="xsd:float"/>
+    <variable name="Var_double" type="xsd:double"/>
+    <variable name="expensive_item" type="xsd:boolean"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in Manipulate1_1.wsdl) -->
+    <receive name="receiveInput" partnerLink="manipulate1_1_client" portType="client:Manipulate1_1" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <assign name="AssignElement" id="BpAss0">
+      <copy>
+        <from expression="concat('Hello ', bpws:getVariableData('inputVariable','payload','/client:process/client:input'))"/>
+        <to variable="ResponseElement" query="/client:process/client:input"/>
+      </copy>
+      <copy>
+        <from variable="ResponseElement" query="/client:process/client:input"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:result"/>
+      </copy>
+    </assign>
+    <assign name="AssignMsgType" id="BpAss1">
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:input"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:result"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:input"/>
+        <to variable="MyName"/>
+      </copy>
+    </assign>
+    <assign name="AssignNumerical" id="BpAss2">
+      <copy>
+        <from expression="2013"/>
+        <to variable="Var_int"/>
+      </copy>
+      <copy>
+        <from expression="-1.2344e56"/>
+        <to variable="Var_float"/>
+      </copy>
+      <copy>
+        <from expression="9223372036854775807"/>
+        <to variable="Var_long"/>
+      </copy>
+      <copy>
+        <from expression="32767"/>
+        <to variable="Var_short"/>
+      </copy>
+      <copy>
+        <from expression="1234.456"/>
+        <to variable="Var_decimal"/>
+      </copy>
+      <copy>
+        <from expression="-1.2344e56"/>
+        <to variable="Var_double"/>
+      </copy>
+    </assign>
+    <assign name="MathCalc" id="BpAss3">
+      <copy>
+        <from expression="round(( bpws:getVariableData('inputVariable','payload','/client:process/client:priceVAT') div 1.2)  * 100) div 100"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:priceNet"/>
+      </copy>
+      <copy>
+        <from expression="round(( bpws:getVariableData('inputVariable','payload','/client:process/client:priceVAT') div 6)  * 100) div 100"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:vat"/>
+      </copy>
+    </assign>
+    <assign name="Boolean" id="BpAss4">
+      <copy>
+        <from expression="false()"/>
+        <to variable="expensive_item"/>
+      </copy>
+      <copy>
+        <from expression="bpws:getVariableData('inputVariable','payload','/client:process/client:priceVAT') > 1000"/>
+        <to variable="expensive_item"/>
+      </copy>
+    </assign>
+    <scope name="DynamicScope" variableAccessSerializable="no" id="BpScp0">
+      <variables>
+        <variable name="ChildSelection" element="client:ChildrenElementType"/>
+        <variable name="index" type="xsd:integer"/>
+      </variables>
+      <sequence name="DynamicSeq" id="BpSeq1">
+        <assign name="InitChildren" id="BpAss5">
+          <copy>
+            <from><client:ChildrenElementType xmlns:client="http://xmlns.oracle.com/Variables/Global/Manipulate1_1">
+   <client:child>Ajda</client:child>
+   <client:child>Urban</client:child>
+</client:ChildrenElementType></from>
+            <to variable="ChildSelection"/>
+          </copy>
+        </assign>
+        <switch name="Switch1" id="BpSwt0">
+          <case condition="bpws:getVariableData('inputVariable','payload','/client:process/client:child_no') &lt; 3  and bpws:getVariableData('inputVariable','payload','/client:process/client:child_no') > 0">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">check_input</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <assign name="GetDynamic" id="BpAss6">
+              <copy>
+                <from variable="inputVariable" part="payload" query="/client:process/client:child_no"/>
+                <to variable="index"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('ChildSelection','/client:ChildrenElementType')/client:child[bpws:getVariableData('index')]"/>
+                <to variable="outputVariable" part="payload" query="/client:processResponse/client:child_selection"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <assign name="AssignNoAction" id="BpAss7">
+              <copy>
+                <from expression="'No value for selection or selection out of bounds'"/>
+                <to variable="outputVariable" part="payload" query="/client:processResponse/client:child_selection"/>
+              </copy>
+            </assign>
+          </otherwise>
+        </switch>
+      </sequence>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="manipulate1_1_client" portType="client:Manipulate1_1" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Apr 18 21:58:11 CEST 2013
+  Author:  jurij
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

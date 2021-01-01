@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="VarCopy_1_1" targetNamespace="http://xmlns.oracle.com/Variables/Global/VarCopy_1_1" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy_1_1" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="varcopy_1_1_client" partnerLinkType="client:VarCopy_1_1" myRole="VarCopy_1_1Provider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:VarCopy_1_1RequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:VarCopy_1_1ResponseMessage"/>
+    <variable name="Var_CopyList" element="client:processResponse"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in VarCopy_1_1.wsdl) -->
+    <receive name="receiveInput" partnerLink="varcopy_1_1_client" portType="client:VarCopy_1_1" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <assign name="AssignCopy" id="BpAss0">
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:name"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:firstName"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:birthYear"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:age"/>
+      </copy>
+      <copy>
+        <from expression="xp20:current-date()"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:responseTime"/>
+      </copy>
+    </assign>
+    <assign name="AssignCopyList" id="BpAss1">
+      <copy>
+        <from><client:processResponse xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy_1_1">
+   <client:firstName>initName</client:firstName>
+   <client:age>0</client:age>  
+   <client:responseTime>2013-04-16</client:responseTime>
+   <client:child>Ajda</client:child>
+   <client:child>Urban</client:child>
+</client:processResponse></from>
+        <to variable="Var_CopyList"/>
+      </copy>
+      <copy>
+        <from expression="'myName'"/>
+        <to variable="Var_CopyList" query="/client:processResponse/client:firstName"/>
+      </copy>
+      <copy>
+        <from expression="20"/>
+        <to variable="Var_CopyList" query="/client:processResponse/client:age"/>
+      </copy>
+      <copy>
+        <from expression="xp20:current-date()"/>
+        <to variable="Var_CopyList" query="/client:processResponse/client:responseTime"/>
+      </copy>
+      <bpelx:copyList>
+        <bpelx:from variable="Var_CopyList" query="/client:processResponse/client:child"/>
+        <bpelx:to variable="outputVariable" part="payload" query="/client:processResponse/client:child"/>
+      </bpelx:copyList>
+    </assign>
+    <assign name="AssignAppendChild" id="BpAss2">
+      <bpelx:append>
+        <bpelx:from><client:child xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy_1_1">Bob</client:child></bpelx:from>
+        <bpelx:to variable="outputVariable" part="payload" query="/client:processResponse"/>
+      </bpelx:append>
+    </assign>
+    <assign name="AssignInsertAfter" id="BpAss3">
+      <bpelx:insertAfter>
+        <bpelx:from><client:child xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy_1_1">Hope</client:child></bpelx:from>
+        <bpelx:to variable="outputVariable" part="payload" query="/client:processResponse/client:child[1]"/>
+      </bpelx:insertAfter>
+    </assign>
+    <assign name="AssignInsertBefore" id="BpAss4">
+      <bpelx:insertBefore>
+        <bpelx:from><client:child xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy_1_1">Joe</client:child></bpelx:from>
+        <bpelx:to variable="outputVariable" part="payload" query="/client:processResponse/client:child[1]"/>
+      </bpelx:insertBefore>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="varcopy_1_1_client" portType="client:VarCopy_1_1" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Apr 17 12:05:52 CEST 2013
+  Author:  laznikj
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

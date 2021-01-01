@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle-webservice-clients xmlns:ns2="http://java.sun.com/xml/ns/javaee">
+   <webservice-client>
+      <service-qname namespaceURI="http://xmlns.oracle.com/bpel_101_HelloWorld_jws/bpel_101_HelloWorld/HelloWorldProcess"
+                     localpart="helloworldprocess_client_ep"/>
+      <port-info>
+         <wsdl-port namespaceURI="http://xmlns.oracle.com/bpel_101_HelloWorld_jws/bpel_101_HelloWorld/HelloWorldProcess"
+                    localpart="HelloWorldProcess_pt"/>
+         <runtime/>
+         <operations>
+            <operation name="process"/>
+         </operations>
+      </port-info>
+   </webservice-client>
+</oracle-webservice-clients>

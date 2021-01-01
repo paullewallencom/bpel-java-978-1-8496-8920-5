@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<soa-xpath-functions xmlns="http://xmlns.oracle.com/soa/config/xpath" 
+                     xmlns:ud="http://www.oracle.com/XSL/Transform/java/org.packt.user.defined.ValueWithUnit">
+  <function name="ud:formatValueWithUnit">
+    <className>org.packt.user.defined.ValueWithUnit</className>
+    <return type="string"/>
+    <params>
+      <param name="value" type="string"/>
+      <param name="unit" type="string"/>
+    </params>
+    <desc/>
+    <detail>
+      <![CDATA[Function concatenates the value and unit.]]>
+    </detail>
+  </function>
+</soa-xpath-functions>

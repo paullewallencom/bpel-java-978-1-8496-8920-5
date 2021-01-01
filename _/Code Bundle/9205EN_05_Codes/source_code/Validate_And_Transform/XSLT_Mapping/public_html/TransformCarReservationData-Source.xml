@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<TempElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://org.packt.temp file:/D:/sola/source_code/Validate_And_Transform/XSLT_Mapping/xsd/TempSchema.xsd" xmlns="http://org.packt.temp">
+   <pieces>AUDI A8</pieces>
+   <pieces>2013</pieces>
+   <pieces>80000</pieces>
+   <pieces>km</pieces>
+   <pieces>60</pieces>
+   <pieces>EUR</pieces>
+   <pieces>ref: 343453</pieces>
+</TempElement>

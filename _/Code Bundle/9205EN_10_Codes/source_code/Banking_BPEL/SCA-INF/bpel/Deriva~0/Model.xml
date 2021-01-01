@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="Derivative_Cashflow" targetNamespace="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/Derivative_Cashflow" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/Derivative_Cashflow" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="derivative_cashflow_client" partnerLinkType="client:Derivative_Cashflow" myRole="Derivative_CashflowProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:Derivative_CashflowRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:Derivative_CashflowResponseMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in Derivative_Cashflow.wsdl) -->
+    <receive name="receiveInput" partnerLink="derivative_cashflow_client" portType="client:Derivative_Cashflow" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <bpelx:exec name="XML_facade_code" version="1.5" language="java" id="BxExe0">
+      <![CDATA[try {  
+    oracle.xml.parser.v2.XMLElement input_cf= (oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:Cashflows");  
+      
+    Object obj_cf = facade.Facade.createFacade("org.packt.cashflow.facade", input_cf);  
+    javax.xml.bind.JAXBElement<org.packt.cashflow.facade.CashflowsType>  cfs = (javax.xml.bind.JAXBElement<org.packt.cashflow.facade.CashflowsType>)obj_cf;  
+    org.packt.cashflow.facade.CashflowsType cf= cfs.getValue();  
+      
+    java.util.List<org.packt.cashflow.facade.PrincipalExchange> princEx= cf.getPrincipalExchange();  
+    for (org.packt.cashflow.facade.PrincipalExchange pe: princEx) { 
+        addAuditTrailEntry("Received cashflow with id: " + pe.getId() + "\n" + 
+                           "   Unadj. Principal Exch. Date ...: " + pe.getUnadjustedPrincipalExchangeDate() + "\n" + 
+                           "   Adj. Principal Exch. Date .....: " + pe.getAdjustedPrincipalExchangeDate() + "\n" +                             
+                           "   Discount factor ...............: " + pe.getDiscountFactor() + "\n" + 
+                           "   Principal Exch. Amount ........: " + pe.getPrincipalExchangeAmount() + "\n"                             
+                           );  
+    }                     
+     
+} catch (Exception e) { 
+    e.printStackTrace(); 
+    addAuditTrailEntry("Error in XML facade occured: " + e.getMessage());  
+}]]>
+    </bpelx:exec>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="derivative_cashflow_client" portType="client:Derivative_Cashflow" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jun 13 23:18:00 CEST 2013
+  Author:  jurij
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="process">
+		<complexType>
+			<sequence>
+                            <element minOccurs="0" name="from" nillable="true" type="dateTime"/>
+                            <element minOccurs="0" name="to" nillable="true" type="dateTime"/>                                
+			</sequence>
+		</complexType>
+	</element>        
+	<element name="processResponse">
+		<complexType>
+			<sequence>
+                            <!--element name="result" type="string"/-->
+                           <element name="carBrand" type="string"/>
+                           <element name="year" type="int"/>
+                           <element name="milleage" type="int"/>
+                           <element name="price" type="int"/>
+                           <element name="ref" type="string"/>
+                        </sequence>
+		</complexType>
+	</element>
+	<element name="processResponseForEach">
+		<complexType>
+			<sequence>
+                            <element name="availableCars" maxOccurs="unbounded">
+                                <complexType>
+                                        <sequence>                            
+                                            <!--element name="result" type="string"/-->
+                                           <element name="carBrand" type="string"/>
+                                           <element name="year" type="int"/>
+                                           <element name="milleage" type="int"/>
+                                           <element name="price" type="int"/>
+                                           <element name="ref" type="string"/>
+                                        </sequence>
+                                </complexType>                                           
+                           </element>
+                        </sequence>
+		</complexType>
+	</element>
+        
+</schema>

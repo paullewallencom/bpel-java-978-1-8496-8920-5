@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    
+     targetNamespace="http://axis.ws.packt.org"
+     xmlns:ns1="http://org.apache.axis2/xsd"
+     xmlns:ns="http://axis.ws.packt.org"
+     xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+     xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ax21="http://axis.ws.packt.org/xsd"
+     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    >
+    <wsdl:documentation>RoomPriceService</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema xmlns:ax22="http://axis.ws.packt.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified"
+             targetNamespace="http://axis.ws.packt.org">
+            <xs:import namespace="http://axis.ws.packt.org/xsd"/>
+            <xs:element name="setPrice">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="price" nillable="true" type="ax21:RoomPrice"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getPrice">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getPriceResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:RoomPrice"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://axis.ws.packt.org/xsd">
+            <xs:complexType name="RoomPrice">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ask" type="xs:int"/>
+                    <xs:element minOccurs="0" name="bid" type="xs:int"/>
+                    <xs:element minOccurs="0" name="mid" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getPriceRequest">
+        <wsdl:part name="parameters" element="ns:getPrice"/>
+    </wsdl:message>
+    <wsdl:message name="getPriceResponse">
+        <wsdl:part name="parameters" element="ns:getPriceResponse"/>
+    </wsdl:message>
+    <wsdl:message name="setPriceRequest">
+        <wsdl:part name="parameters" element="ns:setPrice"/>
+    </wsdl:message>
+    <wsdl:portType name="RoomPriceServicePortType">
+        <wsdl:operation name="getPrice">
+            <wsdl:input message="ns:getPriceRequest" wsaw:Action="urn:getPrice"/>
+            <wsdl:output message="ns:getPriceResponse" wsaw:Action="urn:getPriceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setPrice">
+            <wsdl:input message="ns:setPriceRequest" wsaw:Action="urn:setPrice"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="RoomPriceServiceSoap12Binding" type="ns:RoomPriceServicePortType">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getPrice">
+            <soap12:operation style="document" soapAction="urn:getPrice" soapActionRequired="false"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="setPrice">
+            <soap12:operation style="document" soapAction="urn:setPrice" soapActionRequired="false"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="RoomPriceServiceHttpBinding" type="ns:RoomPriceServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="getPrice">
+            <http:operation location="getPrice"/>
+            <wsdl:input>
+                <mime:content part="parameters" type="text/xml"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="parameters" type="text/xml"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="setPrice">
+            <http:operation location="setPrice"/>
+            <wsdl:input>
+                <mime:content part="parameters" type="text/xml"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="RoomPriceServiceSoap11Binding" type="ns:RoomPriceServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getPrice">
+            <soap:operation style="document" soapAction="urn:getPrice"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="setPrice">
+            <soap:operation style="document" soapAction="urn:setPrice"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="RoomPriceService">
+        <wsdl:port name="RoomPriceServiceHttpSoap12Endpoint" binding="ns:RoomPriceServiceSoap12Binding">
+            <soap12:address location="http://localhost:9999/axis2/services/RoomPriceService.RoomPriceServiceHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="RoomPriceServiceHttpEndpoint" binding="ns:RoomPriceServiceHttpBinding">
+            <http:address location="http://localhost:9999/axis2/services/RoomPriceService.RoomPriceServiceHttpEndpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="RoomPriceServiceHttpSoap11Endpoint" binding="ns:RoomPriceServiceSoap11Binding">
+            <soap:address location="http://localhost:9999/axis2/services/RoomPriceService.RoomPriceServiceHttpSoap11Endpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

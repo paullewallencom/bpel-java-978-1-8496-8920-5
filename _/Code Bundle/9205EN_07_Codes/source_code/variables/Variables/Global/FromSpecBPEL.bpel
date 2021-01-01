@@ -1,0 +1,81 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Apr 17 00:49:39 CEST 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="FromSpecBPEL"
+               targetNamespace="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+  <import namespace="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL"
+          location="xsd/FromSpecBPEL.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import namespace="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL" location="FromSpecBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="fromspecbpel_client" partnerLinkType="client:FromSpecBPEL" myRole="FromSpecBPELProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:FromSpecBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:FromSpecBPELResponseMessage">
+    </variable>
+    <variable name="FromSpecVar" element="client:processResponse">
+      <from><literal><client:processResponse xmlns:client="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL"
+                                             xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+   <client:firstName>initName</client:firstName>
+   <client:age>0</client:age>
+   <client:responseTime>2013-04-16</client:responseTime>
+</client:processResponse></literal></from>
+    </variable>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in FromSpecBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="fromspecbpel_client" portType="client:FromSpecBPEL" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignResult">
+      <copy>
+        <from>$FromSpecVar</from>
+        <to>$outputVariable.payload</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="fromspecbpel_client" portType="client:FromSpecBPEL" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

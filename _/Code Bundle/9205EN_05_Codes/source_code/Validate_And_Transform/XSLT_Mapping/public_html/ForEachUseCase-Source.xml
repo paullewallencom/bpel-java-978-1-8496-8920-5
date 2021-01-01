@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<WScars xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://org.packt.car.ws.schema file:/D:/sola/source_code/Validate_And_Transform/XSLT_Mapping/xsd/ModifiedCarSvcSchema.xsd" xmlns="http://org.packt.car.ws.schema">
+   <listCars>
+      <carType>Audi A4</carType>
+      <buildYear>2012</buildYear>
+      <milleage>2500</milleage>
+      <pricePerDay>80</pricePerDay>
+      <refNo>refNo5</refNo>
+   </listCars>
+   <listCars>
+      <carType>BMW 730i</carType>
+      <buildYear>2013</buildYear>
+      <milleage>500</milleage>
+      <pricePerDay>250</pricePerDay>
+      <refNo></refNo>
+   </listCars>
+   <listCars>
+      <carType>Mercedes Benz</carType>
+      <buildYear>2010</buildYear>
+      <milleage>60000</milleage>
+      <pricePerDay>210</pricePerDay>      
+   </listCars>
+</WScars>

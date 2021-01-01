@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="BPELProcess1" targetNamespace="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/BPELProcess1" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/BPELProcess1" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelprocess1_client" partnerLinkType="client:BPELProcess1" myRole="BPELProcess1Provider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:BPELProcess1RequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:BPELProcess1ResponseMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in BPELProcess1.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelprocess1_client" portType="client:BPELProcess1" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <bpelx:exec name="Java_Embedding1" version="1.5" language="java" id="BxExe0">
+      <![CDATA[try{ 
+oracle.xml.parser.v2.XMLElement input_var= (oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:Cashflows"); 
+ 
+javafacade.TestFacade testFacade= new javafacade.TestFacade(); 
+ 
+Object zz= testFacade.createFacade("com.oracle.xmlns.bpelfacade.banking_bpel.bpelprocess1", input_var); 
+ 
+javax.xml.bind.JAXBElement<com.oracle.xmlns.bpelfacade.banking_bpel.bpelprocess1.CashflowsType>  cf = (javax.xml.bind.JAXBElement<com.oracle.xmlns.bpelfacade.banking_bpel.bpelprocess1.CashflowsType>)zz; 
+com.oracle.xmlns.bpelfacade.banking_bpel.bpelprocess1.CashflowsType cfs= cf.getValue(); 
+ 
+java.util.List<com.oracle.xmlns.bpelfacade.banking_bpel.bpelprocess1.PrincipalExchange> lcf= cfs.getPrincipalExchange(); 
+ 
+for (com.oracle.xmlns.bpelfacade.banking_bpel.bpelprocess1.PrincipalExchange pe: lcf) { 
+    System.out.println(pe.getId());  
+} 
+ 
+} catch (Exception ex) { 
+    ex.printStackTrace(); 
+}]]>
+    </bpelx:exec>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelprocess1_client" portType="client:BPELProcess1" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Jun 09 12:41:02 CEST 2013
+  Author:  admin
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

@@ -1,0 +1,35 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+     xmlns="http://www.w3.org/2001/XMLSchema">
+    <element name="process">
+        <complexType>
+            <sequence>
+                <element name="input" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="processResponse">
+        <complexType>
+            <sequence>
+                <element name="result" type="string"/>
+                <element name="postalcode" type="int"/>
+                <element name="temperature" type="double"/>
+                <element name="person">
+                    <complexType>
+                        <sequence>
+                            <element name="name" type="string"/>
+                            <element name="lastname" type="string"/>
+                        </sequence>
+                    </complexType>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="fault">
+        <complexType>
+            <sequence>
+                <element name="msg" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+</schema>

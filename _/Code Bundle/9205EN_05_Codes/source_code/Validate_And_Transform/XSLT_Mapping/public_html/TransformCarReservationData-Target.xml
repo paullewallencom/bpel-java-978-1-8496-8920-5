@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<client:processResponse xmlns:client="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping">
+   <client:carBrand>AUDI A8</client:carBrand>
+   <client:year>2013</client:year>
+   <client:milleage>80000 km</client:milleage>
+   <client:price>63EUR</client:price>
+   <client:ref>ref: 343453</client:ref>
+</client:processResponse>

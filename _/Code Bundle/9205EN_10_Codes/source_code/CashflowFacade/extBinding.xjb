@@ -1,0 +1,36 @@
+<jxb:bindings version="1.0"
+               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <!--jxb:bindings schemaLocation="file:/D:/delo/source_code/Banking_BPEL/xsd/Derivative_Cashflow.xsd" node="/xs:schema"-->
+  <jxb:bindings schemaLocation="file:/D:/delo/source_code/CashflowFacade/src/xsd/Derivative_Cashflow.xsd" node="/xs:schema">
+        
+    <jxb:schemaBindings>
+        <jxb:package name="org.packt.cashflow.facade">
+            <jxb:javadoc><![CDATA[<body>This package represents the XML facade of the cashflows in the financial derivatives structure.</body>]]>
+            </jxb:javadoc>
+        </jxb:package>
+        <jxb:nameXmlTransform>
+            <jxb:elementName suffix="Element"/>
+        </jxb:nameXmlTransform>
+    </jxb:schemaBindings> 
+
+    <jxb:bindings node="//xs:complexType[@name='CashflowsType']">
+      <jxb:class>
+        <jxb:javadoc>
+    <![CDATA[This class defines the data for the events, when principal exchange occurs.]]>
+        </jxb:javadoc>
+      </jxb:class>
+        
+          <jxb:bindings node=".//xs:element[@name='principalExchange']">
+              <jxb:property>
+                <jxb:javadoc>TEST prop</jxb:javadoc>
+              </jxb:property>
+          </jxb:bindings>
+    
+    </jxb:bindings> 
+
+
+  </jxb:bindings> 
+</jxb:bindings> 
+
+

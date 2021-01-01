@@ -1,0 +1,33 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="BPELProcessGlobalVar"
+     targetNamespace="http://xmlns.oracle.com/Variables/Global/BPELProcessGlobalVar"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/Variables/Global/BPELProcessGlobalVar"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="BPELProcessGlobalVar">
+        <plnk:role name="BPELProcessGlobalVarProvider">
+            <plnk:portType name="client:BPELProcessGlobalVar"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://xmlns.oracle.com/Variables/Global/BPELProcessGlobalVar"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://xmlns.oracle.com/Variables/Global/BPELProcessGlobalVar" schemaLocation="xsd/BPELProcessGlobalVar.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="BPELProcessGlobalVarRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="BPELProcessGlobalVarResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="BPELProcessGlobalVar">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:BPELProcessGlobalVarRequestMessage"/>
+            <wsdl:output message="client:BPELProcessGlobalVarResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

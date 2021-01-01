@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="HelloWorldAsyncProcess"
+     targetNamespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="HelloWorldAsyncProcess">
+        <plnk:role name="HelloWorldAsyncProcessProvider" portType="client:HelloWorldAsyncProcess"/>
+        <plnk:role name="HelloWorldAsyncProcessRequester" portType="client:HelloWorldAsyncProcessCallback"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+                 schemaLocation="xsd/HelloWorldAsyncProcess.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="HelloWorldAsyncProcessRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="HelloWorldAsyncProcessResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:message name="ProcessFaultMessage">
+        <wsdl:part name="message" element="client:fault"/>
+    </wsdl:message>
+    <wsdl:portType name="HelloWorldAsyncProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:HelloWorldAsyncProcessRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="HelloWorldAsyncProcessCallback">
+        <wsdl:operation name="processResponse">
+            <wsdl:input message="client:HelloWorldAsyncProcessResponseMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="processFault">
+            <wsdl:input message="client:ProcessFaultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

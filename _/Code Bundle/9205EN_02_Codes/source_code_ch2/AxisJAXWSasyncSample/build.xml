@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<project default="main" basedir=".">
+
+
+
+<target name="main" depends="pack" >
+	<echo message="deploying sample web service to Axis2 pojo"/>
+	<copy file="build/ReservationService.jar" todir="C:\Programs\axis2-1.6.1-bin\axis2-1.6.1\repository\servicejars"/>
+</target>
+	
+<target name="buildws" >
+	<echo message="building the web service java classes from wsdl"/>
+    <exec executable="${java.home}/../bin/wsimport">
+        <arg line="-keep -verbose -Xdebug -d classes -p org.packt.ws.jaxws.async -s src  wsdl/ReservationService.wsdl"/>
+    </exec>
+</target>	
+
+<target name="pack" >
+	<echo message="creating jar"/>
+	<jar destfile="build/ReservationService.jar" basedir="./classes"/>
+</target>			
+
+</project>

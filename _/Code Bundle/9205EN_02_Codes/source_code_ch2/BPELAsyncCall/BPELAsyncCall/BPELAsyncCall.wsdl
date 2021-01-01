@@ -1,0 +1,35 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="BPELAsyncCall"
+     targetNamespace="http://xmlns.oracle.com/BPELAsyncCall/BPELAsyncCall/BPELAsyncCall"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:cor="http://xmlns.oracle.com/BPELAsyncCall/BPELAsyncCall/BPELAsyncCall/correlationset"
+     xmlns:client="http://xmlns.oracle.com/BPELAsyncCall/BPELAsyncCall/BPELAsyncCall"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="BPELAsyncCall">
+        <plnk:role name="BPELAsyncCallProvider">
+            <plnk:portType name="client:BPELAsyncCall"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://xmlns.oracle.com/BPELAsyncCall/BPELAsyncCall/BPELAsyncCall/correlationset"
+         location="BPELAsyncCall_Properties.wsdl"/>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/BPELAsyncCall/BPELAsyncCall/BPELAsyncCall"
+                 schemaLocation="xsd/BPELAsyncCall.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="BPELAsyncCallRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="BPELAsyncCallResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="BPELAsyncCall">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:BPELAsyncCallRequestMessage"/>
+            <wsdl:output message="client:BPELAsyncCallResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

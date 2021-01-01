@@ -1,0 +1,4 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <system systemId="http://medion:7001/soa-infra/services/default/bpel-101-HelloWorld/helloworldprocess_client_ep?WSDL"
+          uri="../org/packt/bpel/sync/helloworldprocess_client_ep.wsdl"/>
+</catalog>

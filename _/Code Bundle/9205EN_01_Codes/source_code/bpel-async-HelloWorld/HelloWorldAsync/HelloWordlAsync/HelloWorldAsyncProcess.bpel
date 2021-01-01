@@ -1,0 +1,129 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Feb 03 20:23:09 CET 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="HelloWorldAsyncProcess"
+         targetNamespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:client="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import namespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess" location="HelloWorldAsyncProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="helloworldasyncprocess_client" partnerLinkType="client:HelloWorldAsyncProcess" myRole="HelloWorldAsyncProcessProvider" partnerRole="HelloWorldAsyncProcessRequester"/>
+    </partnerLinks>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable" messageType="client:HelloWorldAsyncProcessRequestMessage"/>
+
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable" messageType="client:HelloWorldAsyncProcessResponseMessage"/>
+        <variable name="returnFault_processFault_InputVariable"
+                  messageType="client:ProcessFaultMessage"/>
+    </variables>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in HelloWorldAsyncProcess.wsdl) -->
+        <receive name="receiveInput" partnerLink="helloworldasyncprocess_client" portType="client:HelloWorldAsyncProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+        <if name="IF">
+            <documentation>check_fault</documentation>
+            <condition>xp20:compare(string($inputVariable.payload/client:input), 'FAULT') = 0</condition>
+            <sequence name="Sequence2">
+                <assign name="SetErr">
+                    <copy>
+                        <from>string('Aync Fault occured.')</from>
+                        <to>$returnFault_processFault_InputVariable.message/client:msg</to>
+                    </copy>
+                </assign>
+                <invoke name="returnFault"
+                        partnerLink="helloworldasyncprocess_client"
+                        portType="client:HelloWorldAsyncProcessCallback"
+                        operation="processFault"
+                        inputVariable="returnFault_processFault_InputVariable"
+                        bpelx:invokeAsDetail="no"/>
+            </sequence>
+            <else>
+                <sequence>
+                    <assign name="Assign1">
+                        <copy>
+                            <from>concat('Hello ',string($inputVariable.payload/client:input) )</from>
+                            <to>$outputVariable.payload/client:result</to>
+                        </copy>
+                        <copy>
+                            <from>1430</from>
+                            <to>$outputVariable.payload/client:postalcode</to>
+                        </copy>
+                        <copy>
+                            <from>37.5</from>
+                            <to>$outputVariable.payload/client:temperature</to>
+                        </copy>
+                        <copy>
+                            <from>string('Jurij')</from>
+                            <to>$outputVariable.payload/client:person/client:name</to>
+                        </copy>
+                        <copy>
+                            <from>string('Laznik')</from>
+                            <to>$outputVariable.payload/client:person/client:lastname</to>
+                        </copy>
+                    </assign>
+                    <wait name="Wait1">
+                        <for>'PT5S'</for>
+                    </wait>
+                    <invoke name="callbackClient"
+                            partnerLink="helloworldasyncprocess_client"
+                            portType="client:HelloWorldAsyncProcessCallback"
+                            operation="processResponse"
+                            inputVariable="outputVariable"
+                            bpelx:invokeAsDetail="no"/>
+                </sequence>
+            </else>
+        </if>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+    </sequence>
+</process>

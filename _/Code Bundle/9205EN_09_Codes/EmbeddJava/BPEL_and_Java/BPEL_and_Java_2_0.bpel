@@ -1,0 +1,202 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat May 25 13:48:03 CEST 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="BPEL_and_Java_2_0"
+               targetNamespace="http://xmlns.oracle.com/EmbeddJava/BPEL_and_Java/BPEL_and_Java_2_0"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/EmbeddJava/BPEL_and_Java/BPEL_and_Java_2_0"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import namespace="http://xmlns.oracle.com/EmbeddJava/BPEL_and_Java/BPEL_and_Java_2_0" location="BPEL_and_Java_2_0.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import location="java.text.ParseException" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <import location="java.text.SimpleDateFormat" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <import location="java.util.Date" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <import location="oracle.xml.parser.v2.XMLElement" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpel_and_java_2_0_client" partnerLinkType="client:BPEL_and_Java_2_0" myRole="BPEL_and_Java_2_0Provider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:BPEL_and_Java_2_0RequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:BPEL_and_Java_2_0ResponseMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in BPEL_and_Java_2_0.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpel_and_java_2_0_client" portType="client:BPEL_and_Java_2_0" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="InitOut">
+      <copy>
+        <from>string('')</from>
+        <to>$outputVariable.payload/client:day_of_date</to>
+      </copy>
+    </assign>
+    <extensionActivity>
+      <bpelx:exec name="Java_Embedding1" language="java">
+        <![CDATA[/*   
+//fully qualified names   
+//get request data              
+String input_date= ((oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:process/client:input_date")).getTextContent();              
+              
+//parse it to the date              
+java.text.SimpleDateFormat sdf_input = new java.text.SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");              
+java.util.Date dt= new java.util.Date();              
+              
+try {              
+    dt= sdf_input.parse(input_date);              
+} catch (java.text.ParseException e) {              
+    e.printStackTrace();              
+}              
+              
+//now format it to the new date              
+java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("E");              
+String dateStr = sdf.format(dt);                      
+              
+//assign it to response variable              
+setVariableData("outputVariable", "payload", "/client:processResponse/client:day_of_date", dateStr);             
+*/           
+           
+           
+//with imports   
+//get request data             
+String input_date= ((XMLElement)getVariableData("inputVariable","payload","/client:process/client:input_date")).getTextContent();             
+             
+//parse it to the date             
+SimpleDateFormat sdf_input = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");             
+Date dt= new Date();             
+             
+try {             
+    dt= sdf_input.parse(input_date);             
+} catch (ParseException e) {             
+    e.printStackTrace();             
+}             
+             
+//now format it to the new date             
+SimpleDateFormat sdf = new SimpleDateFormat("E");             
+String dateStr = sdf.format(dt);                     
+             
+//assign it to response variable             
+setVariableData("outputVariable", "payload", "/client:processResponse/client:day_of_date", dateStr);]]>
+      </bpelx:exec>
+    </extensionActivity>
+    <extensionActivity>
+      <bpelx:exec name="Java_ATM" language="java">
+        <![CDATA[String input_amt= ((oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:process/client:atm_amount")).getTextContent();            
+String input_curr= ((oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:process/client:atm_curr")).getTextContent();             
+ 
+double dbl_amt= Double.parseDouble(input_amt); 
+ 
+try {        
+    java.util.Hashtable env = new java.util.Hashtable();        
+    // WebLogic Server 10.x connection details        
+    env.put( javax.naming.Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory" );        
+    env.put(javax.naming.Context.PROVIDER_URL, "t3://localhost:7001");        
+    javax.naming.Context context = new javax.naming.InitialContext( env );        
+            
+    Object obj= context.lookup("ExchangeATM_EJB#org.packt.ejb.atm.ExchATM_EJBRemote");        
+    
+    if (obj != null)      
+    {              
+      org.packt.ejb.atm.ExchATM_EJBRemote atmBean= (org.packt.ejb.atm.ExchATM_EJBRemote)obj;             
+       
+      double exchMoney=atmBean.exchangeMoney(dbl_amt, input_curr);       
+         
+      setVariableData("outputVariable", "payload", "/client:processResponse/client:exchangeMsg", "ATM gives back " + exchMoney + " EUR.");                 
+    
+    }      
+      
+} catch (javax.naming.NamingException e) {        
+    addAuditTrailEntry(e);        
+}]]>
+      </bpelx:exec>
+    </extensionActivity>
+    <extensionActivity>
+      <bpelx:exec name="Java_Process_Data" language="java">
+        <![CDATA[long prc_id= getInstanceId(); 
+String prc_title= getTitle(); 
+String prc_creator= getCreator(); 
+ 
+addAuditTrailEntry("Debug: |" +  prc_id + "| |"  + prc_title + "| |" + prc_creator); 
+ 
+if (prc_id > 0)   
+    setVariableData("outputVariable", "payload", "/client:processResponse/client:prc_inst_id", prc_id); 
+if (prc_title != null) 
+    setVariableData("outputVariable", "payload", "/client:processResponse/client:prc_inst_title", prc_title); 
+if (prc_creator != null) 
+    setVariableData("outputVariable", "payload", "/client:processResponse/client:prc_inst_creator", prc_creator);]]>
+      </bpelx:exec>
+    </extensionActivity>
+    <assign name="BPEL_Process_Data">
+      <copy>
+        <from>ora:getInstanceId()</from>
+        <to>$outputVariable.payload/client:prc_inst_id</to>
+      </copy>
+      <copy>
+        <from>ora:getCompositeName()</from>
+        <to>$outputVariable.payload/client:prc_inst_title</to>
+      </copy>
+      <copy>
+        <from>concat(ora:getCreator(), '')</from>
+        <to>$outputVariable.payload/client:prc_inst_creator</to>
+      </copy>
+    </assign>
+    <extensionActivity>
+      <bpelx:exec name="Java_Process_Status" language="java">
+        <![CDATA[String prc_status= getStatus(); 
+ 
+if (prc_status != null)   
+    setVariableData("outputVariable", "payload", "/client:processResponse/client:prc_status", prc_status);]]>
+      </bpelx:exec>
+    </extensionActivity>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpel_and_java_2_0_client" portType="client:BPEL_and_Java_2_0" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xsd:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/Derivative_Cashflow"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:prc="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/Derivative_Cashflow"
+        xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.1">
+        
+<!--xsd:annotation>
+  <xsd:appinfo>
+    <jxb:schemaBindings>
+      <jxb:package name="org.packt.cashflow.facade">
+        <jxb:javadoc>This package represents the XML facade of the cashflows in the financial derivatives structure.</jxb:javadoc>
+      </jxb:package>
+    </jxb:schemaBindings>
+  </xsd:appinfo>
+</xsd:annotation-->        
+        
+<xsd:complexType name="PrincipalExchange">
+    <!--xsd:annotation>
+      <xsd:appinfo>
+        <jxb:class>
+          <jxb:javadoc>This class defines the data for the events, when principal exchange occurs.</jxb:javadoc>
+        </jxb:class>
+      </xsd:appinfo>
+    </xsd:annotation-->
+
+   <xsd:sequence>
+      <xsd:element minOccurs="0" name="unadjustedPrincipalExchangeDate" type="xsd:date">
+            <!--xsd:annotation>
+                <xsd:appinfo>
+                  <jxb:property>
+                    <jxb:javadoc>TEST prop</jxb:javadoc>
+                  </jxb:property>
+                </xsd:appinfo>
+            </xsd:annotation-->
+         </xsd:element>
+      <xsd:element minOccurs="0" name="adjustedPrincipalExchangeDate" type="xsd:date"/>
+      <xsd:element minOccurs="0" name="principalExchangeAmount" type="xsd:decimal"/>
+      <xsd:element minOccurs="0" name="discountFactor" type="xsd:decimal"/>
+   </xsd:sequence>
+<xsd:attribute name="id" type="xsd:int"/>
+</xsd:complexType>        
+        
+<xsd:complexType name="CashflowsType">
+  <xsd:sequence>
+    <xsd:element maxOccurs="unbounded" minOccurs="0" name="principalExchange" type="prc:PrincipalExchange"/>    
+  </xsd:sequence>
+</xsd:complexType>        
+        
+<xsd:element name="Cashflows" type="prc:CashflowsType"/>
+
+<xsd:element name="processing">
+        <xsd:complexType>
+                <xsd:sequence>
+                        <xsd:element name="status" type="xsd:string"/>
+                </xsd:sequence>
+        </xsd:complexType>
+</xsd:element>
+</xsd:schema>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="HelloWorldAsyncProcess"
+     targetNamespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <wsdl:documentation>
+        <abstractWSDL>HelloWorldAsyncProcess.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="HelloWorldAsyncProcess">
+        <plnk:role name="HelloWorldAsyncProcessRequester" portType="client:HelloWorldAsyncProcessCallback"/>
+        <plnk:role name="HelloWorldAsyncProcessProvider" portType="client:HelloWorldAsyncProcess"/>
+    </plnk:partnerLinkType>
+    <wsp:Policy xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+         wsu:Id="wsaddr_policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/>
+    </wsp:Policy>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"
+                 schemaLocation="HelloWorldAsyncProcess.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="HelloWorldAsyncProcessRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="HelloWorldAsyncProcessResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:message name="ProcessFaultMessage">
+        <wsdl:part name="message" element="client:fault"/>
+    </wsdl:message>
+    <wsdl:portType name="HelloWorldAsyncProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:HelloWorldAsyncProcessRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="HelloWorldAsyncProcessCallback">
+        <wsdl:operation name="processResponse">
+            <wsdl:input message="client:HelloWorldAsyncProcessResponseMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="processFault">
+            <wsdl:input message="client:ProcessFaultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="HelloWorldAsyncProcessBinding" type="client:HelloWorldAsyncProcess">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" URI="#wsaddr_policy"
+             wsdl:required="false"/>
+        <wsdl:operation name="process">
+            <soap:operation style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="HelloWorldAsyncProcessCallbackBinding" type="client:HelloWorldAsyncProcessCallback">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="processResponse">
+            <soap:operation style="document" soapAction="processResponse"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="processFault">
+            <soap:operation style="document" soapAction="processFault"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/HelloWorldAsync/HelloWordlAsync/HelloWorldAsyncProcess"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="helloworldasyncprocess_client_ep">
+        <wsdl:port name="HelloWorldAsyncProcess_pt" binding="client:HelloWorldAsyncProcessBinding">
+            <soap:address location="http://medion:7001/soa-infra/services/default/HelloWordlAsync/helloworldasyncprocess_client_ep"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

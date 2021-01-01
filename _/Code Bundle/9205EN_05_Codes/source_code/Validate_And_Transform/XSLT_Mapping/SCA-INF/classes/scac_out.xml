@@ -1,0 +1,43 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Faults>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>48</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>49</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>52</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>53</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch4_Validating_and_Transforming_BPEL_Services_35\source_code\Validate_And_Transform\XSLT_Mapping\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+</Faults>

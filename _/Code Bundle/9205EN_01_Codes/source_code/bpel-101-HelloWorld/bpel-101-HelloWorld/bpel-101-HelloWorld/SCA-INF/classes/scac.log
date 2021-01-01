@@ -1,0 +1,22 @@
+6.2.2013 23:13:35 oracle.mds
+NOTIFICATION: PManager instance is created without multitenancy support as JVM flag "oracle.multitenant.enabled" is not set to enable multitenancy support.
+6.2.2013 23:13:36 oracle.fabric.common.wsdl.SchemaManager isIncrementalBuildSupported
+INFO: XMLSchema incremental build enabled.
+6.2.2013 23:13:36 com.collaxa.cube.CubeLogger info
+INFO: validating "HelloWorldProcess.bpel" ...
+6.2.2013 23:13:36 oracle.integration.platform.blocks.FabricConfigManager <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+6.2.2013 23:13:36 oracle.integration.platform.blocks.WLSPlatformConfigurationProvider <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELSequenceBlock
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELSwitchBlock
+6.2.2013 23:13:36 com.collaxa.cube.CubeLogger info
+INFO: Composed "HelloWorldProcess" in 44,6 milliseconds [nodes 11=0+11, 246,5 nodes/sec]
+6.2.2013 23:13:39 com.collaxa.cube.CubeLogger info
+INFO: Compiled "HelloWorldProcess" in 3,058 seconds
+6.2.2013 23:13:39 com.collaxa.cube.CubeLogger info
+INFO: Gathered 3 files in 0,7 milliseconds
+
+6.2.2013 23:13:39 com.collaxa.cube.CubeLogger info
+INFO: Packaged "HelloWorldProcess" in 58,0 milliseconds
+

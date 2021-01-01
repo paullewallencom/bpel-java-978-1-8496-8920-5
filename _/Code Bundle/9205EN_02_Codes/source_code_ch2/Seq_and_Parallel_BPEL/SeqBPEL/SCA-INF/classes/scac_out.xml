@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Faults>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>104</line>
+      <col/>
+      <file>BPELProcessSeq.bpel</file>
+      <name>BPELProcessSeq.bpel</name>
+      <fix>Types must be compatible.</fix>
+      <msg>The from-spec of "xsd:string" is not compatible with to-spec of "ns2:getPrice"</msg>
+   </Fault>
+</Faults>

@@ -1,0 +1,101 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue May 25 15:29:35 PDT 2010
+  Author:  jedavies
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="HelloWorldProcess"
+               targetNamespace="http://xmlns.oracle.com/bpel_101_HelloWorld_jws/bpel_101_HelloWorld/HelloWorldProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/bpel_101_HelloWorld_jws/bpel_101_HelloWorld/HelloWorldProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="helloworldprocess_client" partnerLinkType="client:HelloWorldProcess" myRole="HelloWorldProcessProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:HelloWorldProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:HelloWorldProcessResponseMessage"/>
+    <variable messageType="client:ProcessFaultMessage" name="FaultVar"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in HelloWorldProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="helloworldprocess_client" portType="client:HelloWorldProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <switch name="Switch1">
+      <case condition="xp20:compare(string(bpws:getVariableData('inputVariable','payload','/client:process/client:input')), 'FAULT') = 0">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">check_fault</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <sequence name="Sequence1">
+          <assign name="SetFaultMsg">
+            <copy>
+              <from expression="string('Error while processing input parameter.')"/>
+              <to variable="FaultVar" part="message"
+                  query="/client:fault/client:msg"/>
+            </copy>
+          </assign>
+          <throw name="Faulting" faultName="client:fault"
+                 faultVariable="FaultVar"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <assign name="Greetings">
+          <copy>
+            <from expression="concat('Hello ', bpws:getVariableData('inputVariable','payload','/client:process/client:input'), '!!!')"/>
+            <to variable="outputVariable" part="payload"
+                query="/client:processResponse/client:result"/>
+          </copy>
+        </assign>
+      </otherwise>
+    </switch>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="helloworldprocess_client" portType="client:HelloWorldProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

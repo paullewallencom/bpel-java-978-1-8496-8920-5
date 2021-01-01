@@ -1,0 +1,30 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="FromSpecBPEL"
+     targetNamespace="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="FromSpecBPEL">
+        <plnk:role name="FromSpecBPELProvider" portType="client:FromSpecBPEL"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+             xmlns:client="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://xmlns.oracle.com/Variables/Global/FromSpecBPEL" schemaLocation="xsd/FromSpecBPEL.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="FromSpecBPELRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="FromSpecBPELResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="FromSpecBPEL">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:FromSpecBPELRequestMessage"/>
+            <wsdl:output message="client:FromSpecBPELResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

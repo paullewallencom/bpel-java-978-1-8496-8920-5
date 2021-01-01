@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="WeatherSvcs"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/http/RestService/BPELtoREST/WeatherSvcs"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/http/RestService/BPELtoREST/WeatherSvcs"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:imp1="http://org.packt.rest/Weather"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    >
+    <plt:partnerLinkType name="WeatherPT_plt">
+        <plt:role name="QueryWeather_role">
+            <plt:portType name="imp1:WeatherPT"/>
+        </plt:role>
+    </plt:partnerLinkType>
+    <wsdl:import namespace="http://org.packt.rest/Weather" location="WeatherService.wsdl"/>
+</wsdl:definitions>

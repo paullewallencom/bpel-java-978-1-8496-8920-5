@@ -1,0 +1,30 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="VarCopy2_0"
+     targetNamespace="http://xmlns.oracle.com/Variables/Global/VarCopy2_0"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy2_0"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="VarCopy2_0">
+        <plnk:role name="VarCopy2_0Provider" portType="client:VarCopy2_0"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+             xmlns:client="http://xmlns.oracle.com/Variables/Global/VarCopy2_0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://xmlns.oracle.com/Variables/Global/VarCopy2_0" schemaLocation="xsd/VarCopy2_0.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="VarCopy2_0RequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="VarCopy2_0ResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="VarCopy2_0">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:VarCopy2_0RequestMessage"/>
+            <wsdl:output message="client:VarCopy2_0ResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    
+     targetNamespace="http://www.packt.org/book/car"
+     xmlns:ns1="http://org.apache.axis2/xsd"
+     xmlns:ns="http://www.packt.org/book/car"
+     xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+     xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ax21="http://ws.apache.org/axis2/xsd"
+     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    >
+    <wsdl:documentation>RoomPriceService</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2/xsd">
+            <xs:complexType name="InvalidDatesException">
+                <xs:sequence/>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax22="http://ws.apache.org/axis2/xsd" attributeFormDefault="qualified"
+             elementFormDefault="qualified" targetNamespace="http://www.packt.org/book/car">
+            <xs:import namespace="http://ws.apache.org/axis2/xsd"/>
+            <xs:element name="BookCarServiceInvalidDatesException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="InvalidDatesException" nillable="true" type="ax21:InvalidDatesException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getAvailableCar">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="from" nillable="true" type="xs:dateTime"/>
+                        <xs:element minOccurs="0" name="to" nillable="true" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getAvailableCarResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="response" minOccurs="0" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getAvailableCarRequest">
+        <wsdl:part name="parameters" element="ns:getAvailableCar"/>
+    </wsdl:message>
+    <wsdl:message name="getAvailableCarResponse">
+        <wsdl:part name="parameters" element="ns:getAvailableCarResponse"/>
+    </wsdl:message>
+    <wsdl:message name="BookCarServiceInvalidDatesException">
+        <wsdl:part name="parameters" element="ns:BookCarServiceInvalidDatesException"/>
+    </wsdl:message>
+    <wsdl:portType name="BookCarServicePortType">
+        <wsdl:operation name="getAvailableCar">
+            <wsdl:input message="ns:getAvailableCarRequest" wsaw:Action="urn:availableHotels"/>
+            <wsdl:output message="ns:getAvailableCarResponse" wsaw:Action="urn:getAvailableCarResponse"/>
+            <wsdl:fault name="BookCarServiceInvalidDatesException" message="ns:BookCarServiceInvalidDatesException"
+                 wsaw:Action="urn:getAvailableCarBookCarServiceInvalidDatesException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BookCarServiceSoap12Binding" type="ns:BookCarServicePortType">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getAvailableCar">
+            <soap12:operation style="document" soapAction="urn:availableHotels" soapActionRequired="false"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BookCarServiceInvalidDatesException">
+                <soap12:fault name="BookCarServiceInvalidDatesException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BookCarServiceHttpBinding" type="ns:BookCarServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="getAvailableCar">
+            <http:operation location="getAvailableCar"/>
+            <wsdl:input>
+                <mime:content part="parameters" type="text/xml"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="parameters" type="text/xml"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BookCarServiceSoap11Binding" type="ns:BookCarServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getAvailableCar">
+            <soap:operation style="document" soapAction="urn:availableHotels"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BookCarServiceInvalidDatesException">
+                <soap:fault name="BookCarServiceInvalidDatesException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="BookCarService">
+        <wsdl:port name="BookCarServiceHttpSoap12Endpoint" binding="ns:BookCarServiceSoap12Binding">
+            <soap12:address location="http://localhost:9999/axis2/services/BookCarService.BookCarServiceHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="BookCarServiceHttpSoap11Endpoint" binding="ns:BookCarServiceSoap11Binding">
+            <soap:address location="http://localhost:9999/axis2/services/BookCarService.BookCarServiceHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="BookCarServiceHttpEndpoint" binding="ns:BookCarServiceHttpBinding">
+            <http:address location="http://localhost:9999/axis2/services/BookCarService.BookCarServiceHttpEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

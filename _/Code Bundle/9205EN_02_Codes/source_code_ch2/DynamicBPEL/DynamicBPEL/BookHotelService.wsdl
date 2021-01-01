@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="BookHotelService"
+     targetNamespace="http://www.packt.org/book/hotel"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://www.packt.org/book/hotel"
+     xmlns:tns="http://www.packt.org/book/hotel"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <plnk:partnerLinkType name="BookHotelService">
+        <plnk:role name="HotelBooking" portType="client:HotelBooking"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://www.packt.org/book/hotel">
+            <xsd:element name="availableHotels">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="from" nillable="true" type="xsd:dateTime"/>
+                        <xsd:element minOccurs="0" name="to" nillable="true" type="xsd:dateTime"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="availableHotelsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="hotels" maxOccurs="unbounded" minOccurs="0" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="availableHotels">
+        <wsdl:part name="inMsg" element="client:availableHotels"/>
+    </wsdl:message>
+    <wsdl:message name="availableHotelsResponse">
+        <wsdl:part name="outMsg" element="client:availableHotelsResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="HotelBooking">
+        <wsdl:operation name="availableHotels">
+            <wsdl:input message="client:availableHotels"/>
+            <wsdl:output message="client:availableHotelsResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="HotelBookingPortBinding" type="client:HotelBooking">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="availableHotels">
+            <soap:operation soapAction="urn:availableHotels"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="BookHotelService">
+        <wsdl:port name="HotelBookingPort" binding="client:HotelBookingPortBinding">
+            <soap:address location="http://localhost:9999/axis2/services/BookHotelService/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

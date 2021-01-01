@@ -1,0 +1,93 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat Apr 13 09:28:47 CEST 2013
+  Author:  jurij
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="BPELProcessGlobalVar"
+               targetNamespace="http://xmlns.oracle.com/Variables/Global/BPELProcessGlobalVar"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/Variables/Global/BPELProcessGlobalVar"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://www.packt.org/book/car"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelprocessglobalvar_client" partnerLinkType="client:BPELProcessGlobalVar" myRole="BPELProcessGlobalVarProvider"/>
+    <partnerLink name="CarReservationWS" partnerLinkType="ns1:CarReservationWS"
+                 partnerRole="BookCarServicePortType"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:BPELProcessGlobalVarRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:BPELProcessGlobalVarResponseMessage"/>
+    <variable name="inputConcate" element="client:process"/>
+    <variable name="ReserveCar_getAvailableCar_InputVariable"
+              messageType="ns1:getAvailableCarRequest"/>
+    <variable name="ReserveCar_getAvailableCar_OutputVariable"
+              messageType="ns1:getAvailableCarResponse"/>
+    <variable messageType="ns1:BookCarServiceInvalidDatesException"
+              name="FaultVar"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="ns1:BookCarServiceInvalidDatesException"
+           faultVariable="FaultVar">
+      <terminate name="Terminate1"/>
+    </catch>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in BPELProcessGlobalVar.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelprocessglobalvar_client" portType="client:BPELProcessGlobalVar" operation="process" variable="inputVariable" createInstance="yes"/>
+    <invoke name="ReserveCar" bpelx:invokeAsDetail="no"
+            inputVariable="ReserveCar_getAvailableCar_InputVariable"
+            outputVariable="ReserveCar_getAvailableCar_OutputVariable"
+            partnerLink="CarReservationWS"
+            portType="ns1:BookCarServicePortType" operation="getAvailableCar"/>
+    <scope name="LocalScope" variableAccessSerializable="no">
+      <variables>
+        <variable name="msg" type="xsd:string"/>
+      </variables>
+      <faultHandlers>
+        <catch/>
+      </faultHandlers>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelprocessglobalvar_client" portType="client:BPELProcessGlobalVar" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

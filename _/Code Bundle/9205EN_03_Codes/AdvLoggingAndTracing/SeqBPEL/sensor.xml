@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensors xmlns="http://xmlns.oracle.com/bpel/sensor">
+    <sensor sensorName="HotelSensor" kind="reference" target="undefined" filter="" xmlns:ns="http://www.packt.org/book/hotel">
+        <referenceConfig reference="BookHotelSvc" expression="concat($in.parameters/ns:availableHotels/ns:from, $in.parameters/ns:availableHotels/ns:to)" operation="availableHotels" outputDataType="string" outputNamespace="http://www.w3.org/2001/XMLSchema"/>
+    </sensor>
+</sensors>

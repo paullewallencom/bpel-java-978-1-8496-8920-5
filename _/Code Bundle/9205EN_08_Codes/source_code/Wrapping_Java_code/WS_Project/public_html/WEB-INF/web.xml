@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'windows-1250'?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+  <servlet>
+    <servlet-name>BookLibraryPort</servlet-name>
+    <servlet-class>org.packt.java.ws.BookLibraryImpl</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BookLibraryPort</servlet-name>
+    <url-pattern>/BookLibraryPort</url-pattern>
+  </servlet-mapping>
+</web-app>

@@ -1,0 +1,129 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Apr 28 14:46:30 CEST 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="CustomLog"
+               targetNamespace="http://xmlns.oracle.com/ListsAndLogs/CustomLogging/CustomLog"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/ListsAndLogs/CustomLogging/CustomLog"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+  <import namespace="http://xmlns.oracle.com/ListsAndLogs/CustomLogging/CustomLog" location="CustomLog.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    
+    <import location="java.util.logging.Logger" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <import location="java.util.logging.Level" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <import location="oracle.fabric.logging.LogFormatter" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="customlog_client" partnerLinkType="client:CustomLog" myRole="CustomLogProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:CustomLogRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:CustomLogResponseMessage"/>
+    <variable name="nulString" type="xsd:string"/>
+    <variable name="Reply1_process_OutputVariable"
+              messageType="client:CustomLogResponseMessage"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpel:selectionFailure">
+      <sequence name="Sequence2">
+        <extensionActivity>
+          <bpelx:exec name="Java_Report_Exc" language="java">
+            <![CDATA[org.packt.log.LogTheBpelExt.logException("bpel:selectionFailure", null);]]>
+          </bpelx:exec>
+        </extensionActivity>
+        <assign name="AssignMsg">
+          <copy>
+            <from>string('An error occured while processing request.')</from>
+            <to>$Reply1_process_OutputVariable.payload/client:result</to>
+          </copy>
+        </assign>
+        <extensionActivity>
+          <bpelx:exec name="Java_System.out.err" language="java">
+            <![CDATA[System.out.println("Some output from out - no redirect");  
+System.err.println("Some output from err - no redirect");  
+ 
+org.packt.redirect.Redirector.getinstance().activate();  
+  
+System.out.println("Some output from out - redirect");  
+System.err.println("Some output from err - redirect");  
+  
+org.packt.redirect.Redirector.getinstance().deactivate();]]>
+          </bpelx:exec>
+        </extensionActivity>
+        <reply name="ReplyExc" variable="Reply1_process_OutputVariable"
+               partnerLink="customlog_client" portType="client:CustomLog"
+               operation="process"/>
+      </sequence>
+    </catch>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in CustomLog.wsdl) -->
+    <receive name="receiveInput" partnerLink="customlog_client" portType="client:CustomLog" operation="process" variable="inputVariable" createInstance="yes"/>
+    <extensionActivity>
+      <bpelx:exec name="Java_Math" language="java">
+        <![CDATA[try 
+{ 
+    int a= 7 / 0; 
+} catch (ArithmeticException ex) { 
+    org.packt.log.LogTheBpelExt.logException("Java_Math: Error in calculations", ex); 
+}]]>
+      </bpelx:exec>
+    </extensionActivity>
+    <assign name="SimulateException">
+      <copy>
+        <from>$outputVariable.payload/client:result</from>
+        <to>$nulString</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="customlog_client" portType="client:CustomLog" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

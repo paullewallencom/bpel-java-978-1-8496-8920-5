@@ -1,0 +1,15 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+    
+     targetNamespace="http://axis.ws.packt.org"
+     xmlns:ns="http://axis.ws.packt.org"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <plnk:partnerLinkType name="RoomPriceSvc">
+        <plnk:role name="RoomPriceServicePortType" portType="ns:RoomPriceServicePortType"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://axis.ws.packt.org" location="RoomPriceService.wsdl"/>
+</wsdl:definitions>

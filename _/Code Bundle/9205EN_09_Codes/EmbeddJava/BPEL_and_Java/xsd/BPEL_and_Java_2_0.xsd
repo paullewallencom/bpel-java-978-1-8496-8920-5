@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/EmbeddJava/BPEL_and_Java/BPEL_and_Java_2_0"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="process">
+		<complexType>
+			<sequence>				
+                                <element name="input_date" type="date"/>
+                                <element name="atm_amount" type="double"/>
+                                <element name="atm_curr" type="string"/>
+                        </sequence>
+		</complexType>
+	</element>
+	<element name="processResponse">
+		<complexType>
+			<sequence>
+                                <element name="day_of_date" type="string"/>
+                                <element name="exchangeMsg" type="string"/>
+                                <element name="prc_inst_id" type="long"/>
+                                <element name="prc_inst_title" type="string"/>
+                                <element name="prc_inst_creator" type="string"/>
+                                <element name="prc_status" type="string"/>                                
+			</sequence>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project default="main" basedir=".">
+<target name="main" depends="pack" >
+	<echo message="deploying sample web service to Axis2 AAR"/>
+	<copy file="build/RoomPriceService.aar" todir="C:/Programs/axis2-1.6.1-bin/axis2-1.6.1/repository/services"/>
+</target>
+
+<target name="pack" >
+	<echo message="creating jar"/>	
+	
+	<jar destfile="build/RoomPriceService.aar">
+	    <fileset dir="classes"/>
+	    <fileset dir="jar"/>
+	</jar>	
+</target>			
+</project>

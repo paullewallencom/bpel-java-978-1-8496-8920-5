@@ -1,0 +1,21 @@
+21.6.2013 6:36:32 oracle.mds
+NOTIFICATION: PManager instance is created without multitenancy support as JVM flag "oracle.multitenant.enabled" is not set to enable multitenancy support.
+21.6.2013 6:36:33 oracle.fabric.common.wsdl.SchemaManager isIncrementalBuildSupported
+INFO: XMLSchema incremental build enabled.
+21.6.2013 6:36:33 com.collaxa.cube.CubeLogger info
+INFO: validating "Derivative_Cashflow.bpel" ...
+21.6.2013 6:36:33 oracle.integration.platform.blocks.FabricConfigManager <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+21.6.2013 6:36:33 oracle.integration.platform.blocks.WLSPlatformConfigurationProvider <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+node class name com.collaxa.cube.engine.ext.bpel.v1.blocks.BPELSequenceBlock
+21.6.2013 6:36:33 com.collaxa.cube.CubeLogger info
+INFO: Composed "Derivative_Cashflow" in 59,7 milliseconds [nodes 6=0+6, 100,5 nodes/sec]
+21.6.2013 6:36:35 com.collaxa.cube.CubeLogger info
+INFO: Compiled "Derivative_Cashflow" in 1,987 seconds
+21.6.2013 6:36:35 com.collaxa.cube.CubeLogger info
+INFO: Gathered 4 files in 0,8 milliseconds
+
+21.6.2013 6:36:35 com.collaxa.cube.CubeLogger info
+INFO: Packaged "Derivative_Cashflow" in 11,7 milliseconds
+

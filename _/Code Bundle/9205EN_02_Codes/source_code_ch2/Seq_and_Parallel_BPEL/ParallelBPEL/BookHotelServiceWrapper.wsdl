@@ -1,0 +1,17 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="BookHotelService"
+     targetNamespace="http://www.packt.org/book/hotel"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://www.packt.org/book/hotel"
+     xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <plnk:partnerLinkType name="BookHotelSrvc">
+        <plnk:role name="HotelBooking">
+            <plnk:portType name="tns:HotelBooking"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://www.packt.org/book/hotel" location="BookHotelService.wsdl"/>
+</wsdl:definitions>

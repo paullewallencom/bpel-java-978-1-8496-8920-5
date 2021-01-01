@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<project default="main" basedir=".">
+
+<echo message="deploying sample web service to Axis2 pojo"/>
+
+<target name="main" >
+	<copy file="./bin/BookHotel.class" todir="C:/Programs/axis2-1.6.1-bin/axis2-1.6.1/repository/pojo"/>
+</target>
+	
+	
+</project>

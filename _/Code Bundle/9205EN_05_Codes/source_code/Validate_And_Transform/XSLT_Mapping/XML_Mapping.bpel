@@ -1,0 +1,125 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat Mar 16 15:01:34 CET 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="XML_Mapping" targetNamespace="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://www.packt.org/book/hotel"
+         xmlns:ns2="http://www.packt.org/book/car"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns3="http://org.packt.temp"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+    <import namespace="http://org.packt.temp" location="xsd/TempSchema.xsd"
+            importType="http://www.w3.org/2001/XMLSchema" xml:id="id_35"/>
+    <import namespace="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping" location="XML_Mapping.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+    <partnerLinks xml:id="id_3">
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="xml_mapping_client" partnerLinkType="client:XML_Mapping" myRole="XML_MappingProvider" partnerRole="XML_MappingRequester" xml:id="id_4"/>
+        <partnerLink name="CarReservationSvc"
+                     partnerLinkType="ns2:CarReservationSvc"
+                     partnerRole="BookCarServicePortType" xml:id="id_14"/>
+    </partnerLinks>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables xml:id="id_5">
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable" messageType="client:XML_MappingRequestMessage" xml:id="id_6"/>
+
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable" messageType="client:XML_MappingResponseMessage" xml:id="id_7"/>
+        <variable name="InvokeCarWS_getAvailableCar_InputVariable"
+                  messageType="ns2:getAvailableCarRequest" xml:id="id_18"/>
+        <variable name="InvokeCarWS_getAvailableCar_OutputVariable"
+                  messageType="ns2:getAvailableCarResponse" xml:id="id_19"/>
+        <variable name="TempVar" element="ns3:TempElement" xml:id="id_36"/>
+    </variables>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main" xml:id="id_8">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in XML_Mapping.wsdl) -->
+        <receive name="receiveInput" partnerLink="xml_mapping_client" portType="client:XML_Mapping" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+        <assign name="AssignWSinput" xml:id="id_15">
+            <copy xml:id="id_52">
+                <from xml:id="id_53"><literal xml:id="id_54"><getAvailableCar xml:id="id_62">
+<from xml:id="id_63">2001-10-26T21:32:52</from>
+<to xml:id="id_64">2010-05-05T20:00:00</to>
+</getAvailableCar></literal></from>
+                <to xml:id="id_58">$InvokeCarWS_getAvailableCar_InputVariable.parameters</to>
+            </copy>
+            <!--copy xml:id="id_68">
+                <from xml:id="id_69">$inputVariable.payload/client:from</from>
+                <to xml:id="id_70">$InvokeCarWS_getAvailableCar_InputVariable.parameters/ns2:from</to>
+            </copy>
+            <copy xml:id="id_71">
+                <from xml:id="id_72">$inputVariable.payload/client:to</from>
+                <to xml:id="id_73">$InvokeCarWS_getAvailableCar_InputVariable.parameters/ns2:to</to>
+            </copy-->
+        </assign>
+        <validate name="Validate1" xml:id="id_74"
+                  variables="InvokeCarWS_getAvailableCar_InputVariable"/>
+        <invoke name="InvokeCarWS" xml:id="id_16" bpelx:invokeAsDetail="no"
+                partnerLink="CarReservationSvc"
+                portType="ns2:BookCarServicePortType"
+                operation="getAvailableCar"
+                inputVariable="InvokeCarWS_getAvailableCar_InputVariable"
+                outputVariable="InvokeCarWS_getAvailableCar_OutputVariable"/>
+        <assign name="AssignTemp" xml:id="id_37">
+            <extensionAssignOperation xml:id="id_45">
+                <bpelx:copyList xml:id="id_42">
+                    <bpelx:from xml:id="id_43">oraext:create-nodeset-from-delimited-string('{http://org.packt.temp}pieces', $InvokeCarWS_getAvailableCar_OutputVariable.parameters/ns2:return, ';')</bpelx:from>
+                    <bpelx:to xml:id="id_44">$TempVar/ns3:pieces</bpelx:to>
+                </bpelx:copyList>
+            </extensionAssignOperation>
+        </assign>
+        <assign name="Transform1" xml:id="id_29">
+            <bpelx:annotation xml:id="id_30">
+                <bpelx:pattern patternName="bpelx:transformation"
+                               xml:id="id_31"/>
+            </bpelx:annotation>
+            <copy xml:id="id_32">
+                <from xml:id="id_33">ora:doXSLTransformForDoc("xsl/TransformCarReservationData.xsl", $TempVar)</from>
+                <to xml:id="id_34" variable="outputVariable" part="payload"/>
+            </copy>
+        </assign>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <invoke name="callbackClient" partnerLink="xml_mapping_client" portType="client:XML_MappingCallback" operation="processResponse" inputVariable="outputVariable" xml:id="id_10"/>
+    </sequence>
+</process>

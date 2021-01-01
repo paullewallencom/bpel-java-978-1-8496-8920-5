@@ -1,0 +1,115 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Apr 18 21:58:34 CEST 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="Manipulate2_0"
+               targetNamespace="http://xmlns.oracle.com/Variables/Global/Manipulate2_0"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/Variables/Global/Manipulate2_0"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import namespace="http://xmlns.oracle.com/Variables/Global/Manipulate2_0" location="Manipulate2_0.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="manipulate2_0_client" partnerLinkType="client:Manipulate2_0" myRole="Manipulate2_0Provider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:Manipulate2_0RequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:Manipulate2_0ResponseMessage"/>
+    <variable name="Myname" type="xsd:string"/>
+    <variable name="ResponseElement" element="client:process"/>
+    <variable name="Var_int" type="xsd:int">
+      <from>2013</from>
+    </variable>
+    <variable name="Var_long" type="xsd:long">
+      <from>9223372036854775807</from>
+    </variable>
+    <variable name="Var_short" type="xsd:short">
+      <from>32767</from>
+    </variable>
+    <variable name="Var_decimal" type="xsd:decimal">
+      <from>1234.456</from>
+    </variable>
+    <variable name="Var_float" type="xsd:float">
+      <from>1.2343444</from>
+    </variable>
+    <variable name="Var_double" type="xsd:double">
+      <from>-1.23492111</from>
+    </variable>    
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in Manipulate2_0.wsdl) -->
+    <receive name="receiveInput" partnerLink="manipulate2_0_client" portType="client:Manipulate2_0" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignElement">
+      <copy>
+        <from>concat('Hello ', $inputVariable.payload/client:input)</from>
+        <to>$ResponseElement/client:input</to>
+      </copy>
+      <copy>
+        <from>$ResponseElement/client:input</from>
+        <to>$outputVariable.payload/client:result</to>
+      </copy>
+    </assign>
+    <assign name="AssignMsgType">
+      <copy>
+        <from>$inputVariable.payload/client:input</from>
+        <to>$outputVariable.payload/client:result</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/client:input</from>
+        <to>$Myname</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="manipulate2_0_client" portType="client:Manipulate2_0" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

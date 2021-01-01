@@ -1,0 +1,15 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="BookHotelService"
+     targetNamespace="http://www.packt.org/book/hotel"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://www.packt.org/book/hotel"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <plnk:partnerLinkType name="BookHotelSvc">
+        <plnk:role name="HotelBooking" portType="tns:HotelBooking"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://www.packt.org/book/hotel" location="BookHotelService.wsdl"/>
+</wsdl:definitions>

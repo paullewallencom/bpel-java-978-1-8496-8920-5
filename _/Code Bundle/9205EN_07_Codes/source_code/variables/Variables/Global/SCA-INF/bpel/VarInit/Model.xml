@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="VarInit" targetNamespace="http://xmlns.oracle.com/Variables/Global/VarInit" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/Variables/Global/VarInit" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://www.packt.org/book/car" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="varinit_client" partnerLinkType="client:VarInit" myRole="VarInitProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:VarInitRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:VarInitResponseMessage"/>
+    <variable name="inputConcate" element="client:process"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in VarInit.wsdl) -->
+    <receive name="receiveInput" partnerLink="varinit_client" portType="client:VarInit" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <!--assign name="Literal">
+      <copy>
+        <from><processResponse xmlns="http://xmlns.oracle.com/Variables/Global/VarInit">
+  <firstName>Jurij</firstName>
+  <age>37</age>
+  <responseTime>2013-04-15</responseTime>
+</processResponse></from>
+        <to variable="outputVariable" part="payload"
+            query="/client:processResponse"/>
+      </copy>
+    </assign-->
+    <assign name="Literal" id="BpAss0">
+      <copy>
+        <from><processResponse xmlns="http://xmlns.oracle.com/Variables/Global/VarInit">
+  <firstName>Hello</firstName> 
+  <age/>
+  <responseTime/>
+</processResponse></from>
+        <to variable="outputVariable" part="payload" query="/client:processResponse"/>
+      </copy>
+      <copy>
+        <from expression="concat(bpws:getVariableData('outputVariable','payload','/client:processResponse/client:firstName'), ' ', bpws:getVariableData('inputVariable','payload','/client:process/client:name'))"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:firstName"/>
+      </copy>
+    </assign>
+    <assign name="Info" id="BpAss1">
+      <copy>
+        <from expression="xp20:year-from-dateTime(string(xp20:current-date())) - bpws:getVariableData('inputVariable','payload','/client:process/client:birthYear')"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:age"/>
+      </copy>
+      <copy>
+        <from expression="xp20:current-dateTime()"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:responseTime"/>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="varinit_client" portType="client:VarInit" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Apr 15 09:51:58 CEST 2013
+  Author:  laznikj
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

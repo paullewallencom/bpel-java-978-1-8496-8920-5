@@ -1,0 +1,95 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Feb 22 22:10:13 CET 2013
+  Author:  jurij
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="BPELrestProcess"
+               targetNamespace="http://xmlns.oracle.com/RestService/BPELtoREST/BPELrestProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/RestService/BPELtoREST/BPELrestProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://coa.amis.nl/HotelRules"
+         xmlns:ns2="http://org.packt.rest/Weather"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/http/RestService/BPELtoREST/WeatherSvcs">
+
+    <import namespace="http://xmlns.oracle.com/RestService/BPELtoREST/BPELrestProcess" location="BPELrestProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelrestprocess_client" partnerLinkType="client:BPELrestProcess" myRole="BPELrestProcessProvider"/>
+    <partnerLink name="WeatherSvcs" partnerLinkType="ns3:WeatherPT_plt"
+                 partnerRole="QueryWeather_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:BPELrestProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:BPELrestProcessResponseMessage"/>
+    <variable name="CallWeather_QueryWeather_InputVariable"
+              messageType="ns2:GetWeather"/>
+    <variable name="CallWeather_QueryWeather_OutputVariable"
+              messageType="ns2:GetWeatherResponse"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in BPELrestProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelrestprocess_client" portType="client:BPELrestProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignParams">
+      <copy>
+        <from>$inputVariable.payload/client:MyName</from>
+        <to>$CallWeather_QueryWeather_InputVariable.payload/ns2:name</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/client:MyZip</from>
+        <to>$CallWeather_QueryWeather_InputVariable.payload/ns2:zip</to>
+      </copy>
+    </assign>
+    <invoke name="CallWeather"
+            partnerLink="WeatherSvcs" portType="ns2:WeatherPT"
+            operation="QueryWeather"
+            inputVariable="CallWeather_QueryWeather_InputVariable"
+            bpelx:invokeAsDetail="no"
+            outputVariable="CallWeather_QueryWeather_OutputVariable"/>
+    <assign name="AssignResult">
+      <copy>
+        <from>$CallWeather_QueryWeather_OutputVariable.payload</from>
+        <to>$outputVariable.payload/client:result</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelrestprocess_client" portType="client:BPELrestProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="BPEL_and_Java_1_1" targetNamespace="http://xmlns.oracle.com/EmbeddJava/BPEL_and_Java/BPEL_and_Java_1_1" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/EmbeddJava/BPEL_and_Java/BPEL_and_Java_1_1" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpel_and_java_1_1_client" partnerLinkType="client:BPEL_and_Java_1_1" myRole="BPEL_and_Java_1_1Provider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:BPEL_and_Java_1_1RequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:BPEL_and_Java_1_1ResponseMessage"/>
+    <variable name="Input_Txt_Var" type="xsd:string"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in BPEL_and_Java_1_1.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpel_and_java_1_1_client" portType="client:BPEL_and_Java_1_1" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <assign name="FormatBPEL" id="BpAss0">
+      <copy>
+        <from expression="ora:format('At {0} on {1} the BPEL was intatiated with the following input parameter: {2}.',xp20:current-time(),xp20:current-date(),bpws:getVariableData('inputVariable','payload','/client:process/client:input') )"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:resultFmtBPEL"/>
+      </copy>
+    </assign>
+    <bpelx:exec name="FormatJava" version="1.5" language="java" id="BxExe0">
+      <![CDATA[String input_txt= ((oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:process/client:input")).getTextContent();              
+ 
+java.text.MessageFormat mfmt= new java.text.MessageFormat("At {0, time} on {0,date} the BPEL was intatiated with the following input parameter: {1}."); 
+Object[] objs = {new java.util.Date(), input_txt};     
+String result= mfmt.format(objs); 
+addAuditTrailEntry("Fmt msg: " + result);  
+  
+setVariableData("outputVariable", "payload", "/client:processResponse/client:resultFmtJava", result);]]>
+    </bpelx:exec>
+    <assign name="ReadInput" id="BpAss1">
+      <copy>
+        <from variable="inputVariable" part="payload" query="/client:process/client:input"/>
+        <to variable="Input_Txt_Var"/>
+      </copy>
+    </assign>
+    <bpelx:exec name="ReadVar" version="1.5" language="java" id="BxExe1">
+      <![CDATA[oracle.xml.parser.v2.XMLElement input_var= (oracle.xml.parser.v2.XMLElement)getVariableData("inputVariable","payload","/client:process/client:input");                 
+String input_var_txt= input_var.getTextContent();   
+   
+addAuditTrailEntry("Input variable content is: " + input_var_txt);  
+  
+  
+String input_txt_from_var= (String)getVariableData("Input_Txt_Var"); 
+addAuditTrailEntry("Simplified getVariableData(): " + input_txt_from_var);]]>
+    </bpelx:exec>
+    <bpelx:exec name="SetVar" version="1.5" language="java" id="BxExe2">
+      <![CDATA[String input_txt_from_var= (String)getVariableData("Input_Txt_Var"); 
+ 
+StringBuilder sb = new StringBuilder(); 
+for (int i = input_txt_from_var.length() - 1; i >= 0; i--) 
+  sb.append(input_txt_from_var.charAt(i));         
+ 
+addAuditTrailEntry("Operation: " + sb.toString());  
+ 
+setVariableData("outputVariable","payload","/client:processResponse/client:clientResponseMsg", sb.toString());]]>
+    </bpelx:exec>
+    <bpelx:exec name="Auditing" version="1.5" language="java" id="BxExe3">
+      <![CDATA[addAuditTrailEntry("Start processing the Java Embedding activity"); 
+ 
+Object input_obj= getVariableData("Input_Txt_Var");         
+addAuditTrailEntry("Input data", input_obj); 
+ 
+try { 
+    Double whatNumber = Double.parseDouble((String)input_obj); 
+    addAuditTrailEntry("Number is:", whatNumber); 
+} catch (NumberFormatException nfe) { 
+    addAuditTrailEntry("Not a number ?"); 
+    addAuditTrailEntry(nfe); 
+}]]>
+    </bpelx:exec>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpel_and_java_1_1_client" portType="client:BPEL_and_Java_1_1" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat May 25 13:45:14 CEST 2013
+  Author:  jurij
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

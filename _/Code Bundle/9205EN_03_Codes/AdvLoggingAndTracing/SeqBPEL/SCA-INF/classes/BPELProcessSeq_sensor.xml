@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<sensors targetNamespace="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq" xmlns="http://xmlns.oracle.com/bpel/sensor" xmlns:tns="http://xmlns.oracle.com/SequenceBPEL/SeqBPEL/BPELProcessSeq" xmlns:pc="http://xmlns.oracle.com/bpel/sensor" xmlns:ns2="http://axis.ws.packt.org" xmlns:sns1="http://www.packt.org/book/car" xmlns:ns1="http://www.packt.org/book/hotel">
+   <sensor sensorName="RoomPriceSensor" classname="oracle.tip.pc.services.reports.dca.agents.BpelVariableSensorAgent" kind="variable" target="$GetRoomPrice_getPrice_InputVariable/parameters/ns2:getPrice">
+      <variableConfig outputDataType="getPrice" outputNamespace="http://axis.ws.packt.org"/>
+   </sensor>
+   <sensor sensorName="RoomPriceSensorActivity" classname="oracle.tip.pc.services.reports.dca.agents.BpelActivitySensorAgent" kind="activity" target="GetRoomPrice">
+      <activityConfig evalTime="all">
+         <variable outputDataType="RoomPrice" outputNamespace="http://axis.ws.packt.org/xsd" target="$GetRoomPrice_getPrice_OutputVariable/parameters/ns2:getPriceResponse/ns2:return"/>
+      </activityConfig>
+   </sensor>
+   <sensor sensorName="CarFaultSensor" classname="oracle.tip.pc.services.reports.dca.agents.BpelFaultSensorAgent" kind="fault" target="sns1:BookCarServiceInvalidDatesException"/>
+   <sensor sensorName="HotelSensor" classname="oracle.tip.pc.services.reports.dca.agents.BpelActivitySensorAgent" kind="activity" target="AssignAvailHotels">
+      <activityConfig evalTime="completion">
+         <variable outputDataType="dateTime" outputNamespace="http://www.w3.org/2001/XMLSchema" target="$AvailableHotels_availableHotels_InputVariable/parameters/ns1:availableHotels/ns1:from"/>
+      </activityConfig>
+   </sensor>
+</sensors>

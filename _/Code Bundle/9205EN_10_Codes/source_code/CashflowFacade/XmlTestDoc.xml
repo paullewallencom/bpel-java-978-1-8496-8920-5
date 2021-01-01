@@ -1,0 +1,14 @@
+<ns1:Cashflows xmlns:ns1="http://xmlns.oracle.com/BPELFacade/Banking_BPEL/Derivative_Cashflow">
+  <ns1:principalExchange id="12">
+    <ns1:unadjustedPrincipalExchangeDate>2013-01-01</ns1:unadjustedPrincipalExchangeDate>
+    <ns1:adjustedPrincipalExchangeDate>2013-01-01</ns1:adjustedPrincipalExchangeDate>
+    <ns1:principalExchangeAmount>54.5</ns1:principalExchangeAmount>
+    <ns1:discountFactor>545</ns1:discountFactor>
+  </ns1:principalExchange>
+  <ns1:principalExchange id="34">
+    <ns1:unadjustedPrincipalExchangeDate>2013-01-01</ns1:unadjustedPrincipalExchangeDate>
+    <ns1:adjustedPrincipalExchangeDate>2013-01-01</ns1:adjustedPrincipalExchangeDate>
+    <ns1:principalExchangeAmount>12.25</ns1:principalExchangeAmount>
+    <ns1:discountFactor>23.36</ns1:discountFactor>
+  </ns1:principalExchange>
+</ns1:Cashflows>

@@ -1,0 +1,33 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="CustomLog1_1"
+     targetNamespace="http://xmlns.oracle.com/ListsAndLogs/CustomLogging/CustomLog1_1"
+     xmlns:ns1="http://schemas.oracle.com/bpel/extension"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/ListsAndLogs/CustomLogging/CustomLog1_1"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="CustomLog1_1">
+        <plnk:role name="CustomLog1_1Provider">
+            <plnk:portType name="client:CustomLog1_1"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/ListsAndLogs/CustomLogging/CustomLog1_1"
+                 schemaLocation="xsd/CustomLog1_1.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="CustomLog1_1RequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="CustomLog1_1ResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="CustomLog1_1">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:CustomLog1_1RequestMessage"/>
+            <wsdl:output message="client:CustomLog1_1ResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

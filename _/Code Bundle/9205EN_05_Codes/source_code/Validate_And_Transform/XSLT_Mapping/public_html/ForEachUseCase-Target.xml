@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ns1:processResponseForEach xmlns:ns1="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/Validate_And_Transform/XSLT_Mapping/XML_Mapping file:/C:/Projects/BPEL_and_Java/book_draft/ch4_Validating_and_Transforming_BPEL_Services_35/source_code/Validate_And_Transform/XSLT_Mapping/xsd/XML_Mapping.xsd">
+   <ns1:availableCars>
+      <ns1:carBrand>Audi A4</ns1:carBrand>
+      <ns1:year>2012</ns1:year>
+      <ns1:milleage>2500</ns1:milleage>
+      <ns1:price>66</ns1:price>
+      <ns1:ref>refNo5</ns1:ref>
+   </ns1:availableCars>
+   <ns1:availableCars>
+      <ns1:carBrand>BMW 730i</ns1:carBrand>
+      <ns1:year>2013</ns1:year>
+      <ns1:milleage>500</ns1:milleage>
+      <ns1:price>208</ns1:price>
+      <ns1:ref>34323237313933363030383434343934</ns1:ref>
+   </ns1:availableCars>
+   <ns1:availableCars>
+      <ns1:carBrand>Mercedes Benz</ns1:carBrand>
+      <ns1:year>2010</ns1:year>
+      <ns1:milleage>60000</ns1:milleage>
+      <ns1:price>174</ns1:price>
+      <ns1:ref>34323237313933363030383434343934</ns1:ref>
+   </ns1:availableCars>
+</ns1:processResponseForEach>

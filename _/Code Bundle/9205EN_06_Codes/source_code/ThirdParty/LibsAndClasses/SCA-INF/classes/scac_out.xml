@@ -1,0 +1,43 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Faults>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>33</line>
+      <col>31</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>34</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>37</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc/>
+      <line>38</line>
+      <col>32</col>
+      <file>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</file>
+      <name>C:\Projects\BPEL_and_Java\book_draft\ch5_Embedding_third_party_Java_Libraries_20\source_code\ThirdParty\LibsAndClasses\composite.xml</name>
+      <fix/>
+      <msg>schema -  (Error) Attribute 'http://www.w3.org/XML/1998/namespace:id' not expected.</msg>
+   </Fault>
+</Faults>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions
+    
+     targetNamespace="http://org.packt.rest/Weather"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:tns="http://org.packt.rest/Weather"
+     xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    >
+    <plnk:partnerLinkType name="WeatherService">
+        <plnk:role name="WeatherProvider">
+            <plnk:portType name="tns:WeatherPT"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.packt.rest/Weather">
+            <xsd:element name="weatherRes" type="xsd:string"/>
+            
+            <xsd:element name="weatherReq">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="name" type="xsd:string"/>
+                        <xsd:element name="zip" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+    <message name="GetWeather">
+        <part name="payload" element="tns:weatherReq"/>
+    </message>
+    <message name="GetWeatherResponse">
+        <part name="payload" element="tns:weatherRes"/>
+    </message>
+    <portType name="WeatherPT">
+        <operation name="QueryWeather">
+            <input message="tns:GetWeather"/>
+            <output message="tns:GetWeatherResponse"/>
+        </operation>
+    </portType>
+    <binding name="WeatherBind" type="tns:WeatherPT">
+        <http:binding verb="GET"/>
+        <operation name="QueryWeather">
+            <http:operation location="/weather"/>
+            <input>
+                <http:urlEncoded/>
+            </input>
+            <output>
+                <mime:mimeXml part="payload"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="WeatherService">
+        <port name="Weather" binding="tns:WeatherBind">
+            <http:address location="http://medion:7001/weatherservice/jersey/RESTWeatherService/query"/>
+        </port>
+    </service>
+</definitions>
